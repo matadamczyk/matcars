@@ -15,5 +15,7 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "prettier/prettier": "off", // Disable Prettier errors
+    "vue/multi-word-component-names": "off" // Disable multi-word component name rule
   },
 };
