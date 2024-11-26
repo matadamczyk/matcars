@@ -7,7 +7,7 @@
     >
       <div class="dialog-content">
         <div class="dialog-header">
-          <img src="../../public/logo.png" alt="logo" />
+          <img src="../../assets/logo.png" alt="logo" />
           <h2>Welcome Back</h2>
           <p>Don't have an account? <a href="#">Create today!</a></p>
         </div>

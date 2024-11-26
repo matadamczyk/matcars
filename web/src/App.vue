@@ -1,11 +1,15 @@
 <template>
-  <div>
+  <div class="app-container">
     <Navbar />
+    <WelcomeView />
+    <StepsShowcase />
   </div>
 </template>
 
 <script setup lang="ts">
-import Navbar from "./components/Navbar.vue";
+import Navbar from "./components/layout/Navbar.vue";
+import WelcomeView from "./components/WelcomeView.vue";
+import StepsShowcase from "./components/StepsShowcase.vue";
 </script>
 
 <style>
@@ -32,6 +36,9 @@ body {
   background: rgb(153,153,153);
   background: linear-gradient(45deg, rgba(153,153,153,1) 0%, rgba(214,214,214,1) 50%, rgba(153,153,153,1) 100%);
 }
+.app-container {
+  margin-bottom: 2rem;
+}
 .p-dialog.p-component {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 30px;
@@ -44,8 +51,61 @@ body {
   color: var(--white) !important;
 }
 .p-dialog-mask {
-  background-color: rgba(0, 0, 0, 0.4) !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(4px); 
   -webkit-backdrop-filter: blur(4px); 
+}
+@media (min-aspect-ratio: 16/9) {
+  .welcome-container {
+    padding-top: 10rem;
+  }
+  .textarea {
+    margin-left: 8rem;
+  }
+  .image-container {
+    width: 800px;
+    height: 450px;
+  }
+}
+
+@media (min-aspect-ratio: 16/10) {
+  .welcome-container {
+    padding-top: 12rem;
+  }
+  .textarea {
+    margin-left: 10rem;
+  }
+  .image-container {
+    width: 800px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-container {
+    flex-direction: column;
+    align-items: center;
+    padding-top: 5rem;
+  }
+  .textarea {
+    margin-left: 0;
+    text-align: center;
+    transform: translateX(0);
+  }
+  .image-container {
+    width: 100%;
+    height: auto;
+    transform: translateX(0);
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  .booking, .offert {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+  }
 }
 </style>

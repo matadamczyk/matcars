@@ -3,7 +3,7 @@
     <Dialog v-model:visible="localVisible" modal :style="{ width: '25rem', position: 'absolute' }">
       <div class="dialog-content">
         <div class="dialog-header">
-          <img src="../../public/logo.png" alt="logo">
+          <img src="../../assets/logo.png" alt="logo">
           <h2>Create Account</h2>
         </div>
         <div class="dialog-body">

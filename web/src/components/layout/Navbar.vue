@@ -2,7 +2,7 @@
   <div class="navbar-container">
     <div class="navbar">
       <RouterLink to="/"
-        ><img class="logo" src="../../public/logo.png" alt="logo"
+        ><img class="logo" src="../../../public/logo.png" alt="logo"
       /></RouterLink>
       <div class="links">
         <RouterLink class="link" to="/">Home</RouterLink>
@@ -27,8 +27,8 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import SignIn from "@/account/SignIn.vue";
-import Register from "@/account/Register.vue";
+import SignIn from "../account/SignIn.vue";
+import Register from "../account/Register.vue";
 
 const signin = ref(false);
 const register = ref(false);
