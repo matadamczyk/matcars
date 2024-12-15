@@ -2,20 +2,20 @@
   <div class="welcome-container">
     <div
       class="textarea"
-      :class="{ 'animate-left': animate,  'scrolling': isScrolling }"
+      :class="{ 'animate-left': animate, scrolling: isScrolling }"
     >
       <h2>Rent the car of your dreams today!</h2>
       <h1>
-        <span class="orange">Unbeatable</span> prices,
-        <span class="orange">unlimited</span> miles, <br />and
-        <span class="orange">flexible</span> pick-up options await you.
+        <span class="orange">Unbeatable</span> prices,<br />
+        <span class="orange">unlimited</span> miles,<br />
+        and <span class="orange">flexible</span> pick-up options await you.
       </h1>
       <Button class="booking" label="Book now" />
       <Button class="offert" label="View offert" />
     </div>
     <div
       class="image-container"
-      :class="{ 'animate-right': animate,  'scrolling': isScrolling }"
+      :class="{ 'animate-right': animate, scrolling: isScrolling }"
     >
       <img src="../../public/supra.png" alt="Car" />
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const animate = ref(false);
 const isScrolling = ref(false);
@@ -40,11 +40,11 @@ onMounted(() => {
   setTimeout(() => {
     animate.value = true;
   }, 100);
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener("scroll", handleScroll);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
@@ -55,6 +55,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
+  height: 100vh;
 }
 .image-container {
   width: 900px;
@@ -123,23 +124,23 @@ h2 {
 
 .animate-left {
   opacity: 1;
-  transform: translateX(0); 
+  transform: translateX(0);
 }
 .animate-right {
   opacity: 1;
-  transform: translateX(0); 
+  transform: translateX(0);
 }
 .textarea.animate-left {
-  transform: translateX(0); 
+  transform: translateX(0);
   opacity: 1;
 }
 .image-container {
-  transform: translateX(100%); 
+  transform: translateX(100%);
   opacity: 0;
   transition: all 1s ease-in-out;
 }
 .image-container.animate-right {
-  transform: translateX(0); 
+  transform: translateX(0);
   opacity: 1;
 }
 .animate-left {
@@ -153,14 +154,33 @@ h2 {
 
 .textarea.scrolling {
   transform: translateX(-100%);
-  opacity: 0; 
+  opacity: 0;
 }
 
 .image-container.scrolling {
-  transform: translateX(100%); 
-  opacity: 0; 
+  transform: translateX(100%);
+  opacity: 0;
 }
 
-@media (min-aspect-ratio: 16/10) {}
-@media (max-width: 768px) {}
+@media (min-aspect-ratio: 16/10) {
+  .welcome-container {
+    padding-top: 12rem;
+  }
+  .textarea {
+    scale: 0.8;
+    margin-left: 9rem;
+  }
+  .image-container {
+    width: 900px;
+    height: 373px;
+    overflow: hidden;
+    position: relative;
+  }
+  img {
+    scale: 0.8;
+    transform: translateX(-12rem); /* Adjust the value as needed */
+  }
+}
+@media (max-width: 768px) {
+}
 </style>

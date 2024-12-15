@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <Navbar />
-    <WelcomeView />
-    <StepsShowcase />
+    <RouterView />
+    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
-import Navbar from "./components/layout/Navbar.vue";
-import WelcomeView from "./components/WelcomeView.vue";
-import StepsShowcase from "./components/StepsShowcase.vue";
+import { RouterView } from "vue-router";
+import Navbar from "@/components/layout/Navbar.vue";
+import Footer from "@/components/layout/Footer.vue";
 </script>
 
 <style>
@@ -26,7 +26,11 @@ import StepsShowcase from "./components/StepsShowcase.vue";
   --dark-grey: #262626;
   --black: #000000;
 }
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 html,
 body {
   margin: 0;
@@ -35,9 +39,13 @@ body {
   width: 100%;
   background: rgb(153,153,153);
   background: linear-gradient(45deg, rgba(153,153,153,1) 0%, rgba(214,214,214,1) 50%, rgba(153,153,153,1) 100%);
+  /* overflow-x: hidden; */
 }
 .app-container {
-  margin-bottom: 2rem;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 .p-dialog.p-component {
   background-color: rgba(255, 255, 255, 0.2);

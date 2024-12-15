@@ -1,16 +1,28 @@
 <template>
-  <div class="navbar-container">
+  <div ref="navbar" class="navbar-container" :class="{ hidden: isHidden }">
     <div class="navbar">
-      <RouterLink to="/"
-        ><img class="logo" src="../../../public/logo.png" alt="logo"
-      /></RouterLink>
+      <RouterLink to="/">
+        <img class="logo" src="../../../public/logo.png" alt="logo" />
+      </RouterLink>
       <div class="links">
-        <RouterLink class="link" to="/">Home</RouterLink>
-        <RouterLink class="link" to="/about">About</RouterLink>
-        <RouterLink class="link" to="/vehicle-models"
+        <RouterLink to="/" :class="{ link: true, active: activePath === '/' }"
+          >Home</RouterLink
+        >
+        <RouterLink
+          to="/about"
+          :class="{ link: true, active: activePath === '/about' }"
+          >About</RouterLink
+        >
+        <RouterLink
+          to="/offer"
+          :class="{ link: true, active: activePath === '/offer' }"
           >Vehicle Models</RouterLink
         >
-        <RouterLink class="link" to="/contact">Contact</RouterLink>
+        <RouterLink
+          to="/contact"
+          :class="{ link: true, active: activePath === '/contact' }"
+          >Contact</RouterLink
+        >
       </div>
       <div class="login">
         <Button class="signin" label="Sign in" @click="signin = true"></Button>
@@ -25,13 +37,39 @@
     <Register :visible="register" @update:visible="register = $event" />
   </div>
 </template>
+
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watchEffect, watch } from "vue";
+import { useRoute } from "vue-router";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
 
 const signin = ref(false);
 const register = ref(false);
+const isHidden = ref(false);
+const route = useRoute();
+
+const activePath = ref(route.path);
+
+watch(() => route.path, (newPath) => {
+  activePath.value = newPath;
+});
+
+const handleScroll = () => {
+  if (window.scrollY > window.innerHeight) {
+    isHidden.value = true;
+  } else {
+    isHidden.value = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <style scoped>
@@ -41,6 +79,11 @@ const register = ref(false);
   display: flex;
   justify-content: center;
   z-index: 1000;
+  transition: opacity 0.5s ease-in-out;
+}
+.navbar-container.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 .navbar {
   position: inherit;
@@ -61,6 +104,9 @@ const register = ref(false);
   margin-top: 25px;
   margin-left: 1rem;
   cursor: pointer;
+}
+.active {
+  color: var(--orange);
 }
 .link {
   position: relative;
@@ -128,5 +174,10 @@ const register = ref(false);
   border-radius: 15px;
   color: var(--white);
   box-shadow: 0 0 10px var(--white);
+}
+@media (min-aspect-ratio: 16/10) {
+  .navbar {
+    scale: 0.9;
+  }
 }
 </style>
