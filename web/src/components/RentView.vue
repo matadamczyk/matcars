@@ -35,7 +35,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-image: url('../../public/rent-background.jpg');
+  background-image: url("../../public/rent-background.jpg");
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -49,7 +49,6 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
-
 }
 form {
   display: flex;
@@ -70,14 +69,14 @@ label {
   font-weight: 600;
   font-size: 20px;
 }
-input, select {
+input,
+select {
   width: 220px;
   height: 45px;
   border-radius: 15px;
   border: 2px solid var(--white);
   background-color: var(--light-orange);
   margin-top: 10px;
-
 }
 .submit {
   font-weight: 500;

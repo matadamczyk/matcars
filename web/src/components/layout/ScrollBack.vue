@@ -43,7 +43,7 @@ onUnmounted(() => {
 <style scoped>
 .scroll-back-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 50px;
   right: 20px;
   padding: 10px 20px;
   background-color: var(--orange);

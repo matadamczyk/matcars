@@ -33,8 +33,8 @@
         ></Button>
       </div>
     </div>
-    <SignIn :visible="signin" @update:visible="signin = $event" />
-    <Register :visible="register" @update:visible="register = $event" />
+    <SignIn :visible="signin" @update:visible="signin = $event" @switchToRegister="openRegister" />
+    <Register :visible="register" @update:visible="register = $event" @switchToSignIn="openSignIn" />
   </div>
 </template>
 
@@ -51,6 +51,16 @@ const route = useRoute();
 const router = useRouter();
 
 const activePath = ref(route.path);
+
+const openSignIn = () => {
+  register.value = false;
+  signin.value = true;
+};
+
+const openRegister = () => {
+  signin.value = false;
+  register.value = true;
+};
 
 watch(
   () => route.path,

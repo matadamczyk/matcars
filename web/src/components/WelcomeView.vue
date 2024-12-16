@@ -10,8 +10,8 @@
         <span class="orange">unlimited</span> miles,<br />
         and <span class="orange">flexible</span> pick-up options await you.
       </h1>
-      <Button class="booking" label="Book now" />
-      <Button class="offer" label="View offer" />
+      <Button @click="moveToRent" class="booking" label="Book now" />
+      <Button @click="moveToOffer" class="offer" label="View offer" />
     </div>
     <div
       class="image-container"
@@ -24,9 +24,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useRouter } from "vue-router";
 
 const animate = ref(false);
 const isScrolling = ref(false);
+const router = useRouter();
 
 const handleScroll = () => {
   if (window.scrollY > 100) {
@@ -34,6 +36,28 @@ const handleScroll = () => {
   } else {
     isScrolling.value = false;
   }
+};
+
+const moveToRent = () => {
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  let scrollPosition;
+
+  if (Math.abs(aspectRatio - 16 / 10) < 0.01) {
+    scrollPosition = window.innerHeight * (16 / 10);
+  } else if (Math.abs(aspectRatio - 16 / 9) < 0.01) {
+    scrollPosition = window.innerHeight * (16 / 9);
+  } else {
+    scrollPosition = window.innerHeight;
+  }
+
+  window.scrollTo({
+    top: scrollPosition * 2,
+    behavior: "smooth",
+  });
+};
+
+const moveToOffer = () => {
+  router.push("/offer");
 };
 
 onMounted(() => {
@@ -56,7 +80,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   overflow: hidden;
   height: 100vh;
-  background-image: url('../../public/welcome-background.jpg');
+  background-image: url("../../public/welcome-background.jpg");
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -66,7 +90,7 @@ onBeforeUnmount(() => {
   height: 373px;
   overflow: hidden;
   position: relative;
-  clip-path: inset(0 15px 0 0); 
+  clip-path: inset(0 15px 0 0);
 }
 
 img {
@@ -184,7 +208,7 @@ h2 {
   }
   img {
     scale: 0.8;
-    transform: translateX(-12rem); 
+    transform: translateX(-12rem);
   }
 }
 @media (max-width: 768px) {

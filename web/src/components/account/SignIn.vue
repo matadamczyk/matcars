@@ -9,7 +9,7 @@
         <div class="dialog-header">
           <img src="../../assets/logo.png" alt="logo" />
           <h2>Welcome Back</h2>
-          <p>Don't have an account? <a href="#">Create today!</a></p>
+          <p>Don't have an account? <a href="#" @click="switchToRegister">Create today!</a></p>
         </div>
         <div class="dialog-body">
           <label for="email1">Email</label>
@@ -52,7 +52,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:visible"]);
+const emit = defineEmits(["update:visible", "switchToRegister"]);
 
 const localVisible = ref(props.visible);
 const checked1 = ref(false);
@@ -67,6 +67,11 @@ watch(
     localVisible.value = newValue;
   }
 );
+
+const switchToRegister = () => {
+  emit("update:visible", false);
+  emit("switchToRegister");
+};
 </script>
 
 <style scoped lang="scss">
@@ -117,12 +122,13 @@ watch(
   font-size: 0.9rem;
   color: #333;
   margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .dialog-body .input {
   padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid #ccc;
+  border-radius: 15px;
   margin-bottom: 1rem;
 }
 
