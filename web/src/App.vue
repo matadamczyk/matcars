@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <Navbar />
+    <ScrollBack />
     <RouterView />
     <Footer />
   </div>
@@ -10,6 +11,7 @@
 import { RouterView } from "vue-router";
 import Navbar from "@/components/layout/Navbar.vue";
 import Footer from "@/components/layout/Footer.vue";
+import ScrollBack from "@/components/layout/ScrollBack.vue";
 </script>
 
 <style>
@@ -37,12 +39,11 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  background: rgb(153,153,153);
+  background: grey;
   background: linear-gradient(45deg, rgba(153,153,153,1) 0%, rgba(214,214,214,1) 50%, rgba(153,153,153,1) 100%);
   /* overflow-x: hidden; */
 }
 .app-container {
-
   min-height: 100vh;
   display: flex;
   flex-direction: column;

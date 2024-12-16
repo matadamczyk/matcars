@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contact-container">
 
   </div>
 </template>
@@ -9,5 +9,7 @@
 </script>
 
 <style scoped>
-
+.contact-container {
+  height: 100vh;
+}
 </style>

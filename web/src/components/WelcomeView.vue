@@ -11,7 +11,7 @@
         and <span class="orange">flexible</span> pick-up options await you.
       </h1>
       <Button class="booking" label="Book now" />
-      <Button class="offert" label="View offert" />
+      <Button class="offer" label="View offer" />
     </div>
     <div
       class="image-container"
@@ -56,13 +56,19 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   overflow: hidden;
   height: 100vh;
+  background-image: url('../../public/welcome-background.jpg');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
 }
 .image-container {
   width: 900px;
   height: 373px;
   overflow: hidden;
   position: relative;
+  clip-path: inset(0 15px 0 0); 
 }
+
 img {
   object-fit: cover;
   object-position: center;
@@ -102,7 +108,7 @@ h2 {
   color: var(--white);
   box-shadow: 0 0 15px var(--light-orange);
 }
-.offert {
+.offer {
   font-weight: 500;
   font-size: 30px;
   position: relative;
@@ -113,7 +119,7 @@ h2 {
   color: var(--white);
   margin-right: 1rem;
 }
-.p-button.p-component.offert:hover {
+.p-button.p-component.offer:hover {
   border: 1px solid var(--light-grey);
   background-color: var(--light-grey);
   padding: 10px;
@@ -178,7 +184,7 @@ h2 {
   }
   img {
     scale: 0.8;
-    transform: translateX(-12rem); /* Adjust the value as needed */
+    transform: translateX(-12rem); 
   }
 }
 @media (max-width: 768px) {

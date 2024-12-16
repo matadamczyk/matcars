@@ -1,7 +1,7 @@
 <template>
   <div class="steps-container">
     <div class="title">
-      <h3>Plan your trip right now!</h3>
+      <h3>Plan your <span>trip</span> right now!</h3>
       <h1>Check out <span>steps</span> of renting</h1>
     </div>
     <div class="steps">
@@ -9,12 +9,14 @@
         <i class="pi pi-search"></i>
         <h2>Select Car</h2>
       </div>
-      <i class="pi pi-arrow-right"></i>
+      <i class="pi pi-angle-right first"></i>
+      <i class="pi pi-angle-right second"></i>
       <div class="step">
         <i class="pi pi-book"></i>
         <h2>Book</h2>
       </div>
-      <i class="pi pi-arrow-right"></i>
+      <i class="pi pi-angle-right first"></i>
+      <i class="pi pi-angle-right second"></i>
       <div class="step">
         <i class="pi pi-car"></i>
         <h2>Drive car of your dreams</h2>
@@ -28,11 +30,24 @@
 </script>
 
 <style scoped>
+@keyframes colorChange {
+  0% {
+    color: var(--orange);
+  }
+  50% {
+    color: black;
+  }
+  100% {
+    color: var(--orange);
+  }
+}
 .steps-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 7rem; 
+  justify-content: center;
+  /* margin-top: 5rem;  */
+  height: 100vh;
 }
 .title {
   text-align: center;
@@ -42,7 +57,7 @@
   flex-direction: row;
   text-align: center;
   justify-content: space-between;
-  margin: 7rem;
+  margin-top: 7rem;
 }
 .step {
   margin: 0 10rem;
@@ -57,21 +72,32 @@
   padding: 20px;
   box-shadow: 0 0 15px var(--light-orange);
 }
-.pi-arrow-right {
-  margin: 8rem 10px;
-}
 i {
   font-size: 2rem;
 }
-.pi-arrow-right {
+.pi-angle-right {
+  margin: 8rem 0;
   border: none;
+  font-size: 4rem;
   background-color: transparent;
+  animation: colorChange 2s infinite;
+}
+.first {
+  margin-right: -15px;
+  animation-delay: 0s;
+}
+.second {
+  margin-left: -15px;
+  animation-delay: 1s;
 }
 h3 {
-  font-size: 20px;
+  font-size: 30px;
 }
 h2 {
   width: 100px;
+}
+h1 {
+  font-size: 40px;
 }
 span {
   color: var(--orange);

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="offer-container">
 
   </div>
 </template>
@@ -9,5 +9,7 @@
 </script>
 
 <style scoped>
-
+.offer-container {
+  height: 100vh;
+}
 </style>

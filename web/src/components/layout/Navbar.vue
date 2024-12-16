@@ -39,8 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed, watchEffect, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
 
@@ -48,15 +48,19 @@ const signin = ref(false);
 const register = ref(false);
 const isHidden = ref(false);
 const route = useRoute();
+const router = useRouter();
 
 const activePath = ref(route.path);
 
-watch(() => route.path, (newPath) => {
-  activePath.value = newPath;
-});
+watch(
+  () => route.path,
+  (newPath) => {
+    activePath.value = newPath;
+  }
+);
 
 const handleScroll = () => {
-  if (window.scrollY > window.innerHeight) {
+  if (window.scrollY > 0.9 * window.innerHeight) {
     isHidden.value = true;
   } else {
     isHidden.value = false;
@@ -65,6 +69,9 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
+  router.afterEach((to) => {
+    activePath.value = to.path;
+  });
 });
 
 onBeforeUnmount(() => {
@@ -93,11 +100,11 @@ onBeforeUnmount(() => {
   width: 80%;
   height: 5rem;
   margin: 3rem;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(160, 160, 160, 0.2);
   border-radius: 30px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(160, 160, 160, 0.3);
 }
 .logo {
   height: 8rem;
@@ -105,8 +112,9 @@ onBeforeUnmount(() => {
   margin-left: 1rem;
   cursor: pointer;
 }
-.active {
-  color: var(--orange);
+::v-deep(.active) {
+  color: var(--orange) !important;
+  font-weight: bold;
 }
 .link {
   position: relative;
