@@ -22,7 +22,7 @@ AppDataSource.initialize()
   .then(() => {
     console.log("Database connected");
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     console.error("Database connection error:", error);
   });
 

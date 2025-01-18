@@ -3,14 +3,17 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Klient {
   @PrimaryGeneratedColumn()
-  id: number;
+  id_klienta!: number;
 
   @Column()
-  imie: string;
+  imie!: string;
 
   @Column()
-  nazwisko: string;
+  nazwisko!: string;
 
   @Column()
-  email: string;
+  email!: string;
+
+  @Column()
+  telefon!: string
 }

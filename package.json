@@ -2,19 +2,24 @@
   "name": "matcars",
   "version": "1.0.0",
   "scripts": {
-    "start:api": "cd api && ts-node server.ts",
+    "start:api": "cd ./api/src/ && nodemon server.ts",
     "start:web": "cd web && npm run serve",
     "start": "concurrently \"npm run start:api\" \"npm run start:web\""
   },
   "devDependencies": {
+    "@types/pg": "^8.11.10",
     "concurrently": "^6.2.1",
+    "nodemon": "^3.1.9",
+    "pg": "^8.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "pg": "^8.13.1",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.3",
     "reflect-metadata": "^0.2.2",

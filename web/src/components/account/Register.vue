@@ -14,6 +14,7 @@
             type="text"
             placeholder="Email address"
             class="input"
+            v-model="email"
           />
 
           <label for="password1">Password</label>
@@ -22,6 +23,7 @@
             type="password"
             placeholder="Password"
             class="input"
+            v-model="password"
           />
 
           <label for="password2">Confirm password</label>
@@ -30,9 +32,10 @@
             type="password"
             placeholder="Password"
             class="input"
+            v-model="confirmPassword"
           />
 
-          <button class="btn btn-primary">Register</button>
+          <button class="btn btn-primary" @click="handleRegister">Register</button>
         </div>
       </div>
     </Dialog>
@@ -41,6 +44,7 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from "vue";
+import axios from "axios";
 import Dialog from "primevue/dialog";
 
 const props = defineProps({
@@ -53,7 +57,9 @@ const props = defineProps({
 const emit = defineEmits(["update:visible", "switchToSignIn"]);
 
 const localVisible = ref(props.visible);
-const checked1 = ref(false);
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
 
 watch(localVisible, (newValue) => {
   emit("update:visible", newValue);
@@ -69,6 +75,26 @@ watch(
 const switchToSignIn = () => {
   emit("update:visible", false);
   emit("switchToSignIn");
+};
+
+const handleRegister = async () => {
+  if (password.value !== confirmPassword.value) {
+    console.error("Passwords do not match");
+    // Handle password mismatch error, e.g., show error message
+    return;
+  }
+
+  try {
+    const response = await axios.post("/api/uzytkownicy/register", {
+      email: email.value,
+      haslo: password.value,
+    });
+    console.log(response.data);
+    // Handle successful registration, e.g., redirect, show success message, etc.
+  } catch (error) {
+    console.error("Registration failed:", error);
+    // Handle registration error, e.g., show error message
+  }
 };
 </script>
 

@@ -18,6 +18,7 @@
             type="text"
             placeholder="Email address"
             class="input"
+            v-model="email"
           />
 
           <label for="password1">Password</label>
@@ -26,13 +27,14 @@
             type="password"
             placeholder="Password"
             class="input"
+            v-model="password"
           />
 
           <div class="dialog-footer">
             <a href="#">Forgot password?</a>
           </div>
 
-          <button class="btn btn-primary">Sign In</button>
+          <button class="btn btn-primary" @click="handleSignIn">Sign In</button>
         </div>
       </div>
     </Dialog>
@@ -41,6 +43,7 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from "vue";
+import axios from "axios";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
 import FloatLabel from "primevue/floatlabel";
@@ -55,7 +58,8 @@ const props = defineProps({
 const emit = defineEmits(["update:visible", "switchToRegister"]);
 
 const localVisible = ref(props.visible);
-const checked1 = ref(false);
+const email = ref("");
+const password = ref("");
 
 watch(localVisible, (newValue) => {
   emit("update:visible", newValue);
@@ -71,6 +75,20 @@ watch(
 const switchToRegister = () => {
   emit("update:visible", false);
   emit("switchToRegister");
+};
+
+const handleSignIn = async () => {
+  try {
+    const response = await axios.post("/api/uzytkownicy/login", {
+      email: email.value,
+      haslo: password.value,
+    });
+    console.log(response.data);
+    // Handle successful login, e.g., store token, redirect, etc.
+  } catch (error) {
+    console.error("Login failed:", error);
+    // Handle login error, e.g., show error message
+  }
 };
 </script>
 
