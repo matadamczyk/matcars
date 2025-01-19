@@ -23,13 +23,26 @@
           :class="{ link: true, active: activePath === '/contact' }"
           >Contact</RouterLink
         >
+        <RouterLink
+          to="/admin"
+          :class="{ link: true, active: activePath === '/admin' }"
+          v-if="store.isAdmin"
+          >Admin Panel</RouterLink
+        >
       </div>
-      <div class="login">
+      <div class="login" v-if="!store.isLoggedIn">
         <Button class="signin" label="Sign in" @click="signin = true"></Button>
         <Button
           class="register"
           label="Register"
           @click="register = true"
+        ></Button>
+      </div>
+      <div class="logout" v-else>
+        <Button
+          class="register"
+          label="Logout"
+          @click="handleLogout"
         ></Button>
       </div>
     </div>
@@ -41,8 +54,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "@/store/store";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
+import axios from "axios";
+
+const store = useStore();
 
 const signin = ref(false);
 const register = ref(false);
@@ -74,6 +91,20 @@ const handleScroll = () => {
     isHidden.value = true;
   } else {
     isHidden.value = false;
+  }
+};
+
+const handleLogout = async () => {
+  try {
+    const response = await axios.post("http://localhost:3050/api/uzytkownicy/logout");
+    console.log(response.data);
+    store.isLoggedIn = false;
+    store.isAdmin = false;
+    router.push("/").then(() => {
+      window.location.reload();
+    });
+  } catch (error) {
+    console.error("Logout failed:", error);
   }
 };
 

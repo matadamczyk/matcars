@@ -9,6 +9,7 @@
   "devDependencies": {
     "@types/pg": "^8.11.10",
     "concurrently": "^6.2.1",
+    "helmet": "^8.0.0",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",
     "ts-node": "^10.9.2",

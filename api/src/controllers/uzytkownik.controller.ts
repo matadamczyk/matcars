@@ -94,8 +94,12 @@ export const loginUzytkownik = async (req: Request, res: Response): Promise<void
     }
 
     const token = jwt.sign({ id: user.id_uzytkownika, rola: user.rola }, "SECRET_KEY", { expiresIn: "1h" });
-    res.status(200).json({ token, message: "Zalogowano pomyślnie" });
+    res.status(200).json({ token, rola: user.rola, message: "Zalogowano pomyślnie" });
   } catch (err) {
     res.status(500).json({ message: "Błąd serwera", error: err });
   }
+};
+
+export const logoutUzytkownik = (req: Request, res: Response): void => {
+  res.status(200).json({ message: "Logged out successfully" });
 };

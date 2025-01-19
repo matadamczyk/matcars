@@ -1,4 +1,8 @@
 import { DataSource } from "typeorm";
+import { Klient } from "../entities/Klient";
+import { Samochod } from "../entities/Samochod";
+import { Uzytkownik } from "../entities/Uzytkownik";
+import { Wypozyczenie } from "../entities/Wypozyczenie";
 import dotenv from "dotenv";
 
 dotenv.config({ path: __dirname + '/../../.env' });
@@ -10,8 +14,12 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  synchronize: false,
+  schema: process.env.DB_SCHEMA || 'public',
+  synchronize: true,
   logging: true,
-  entities: ["src/entities/**/*.ts"],
-  migrations: ["src/migrations/**/*.ts"],
+  entities: [Klient, Samochod, Uzytkownik, Wypozyczenie],
+  migrations: [__dirname, "../migrations/**/*.ts"],
+  ssl: {
+    rejectUnauthorized: false, 
+  },
 });

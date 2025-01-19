@@ -1,27 +1,25 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Klient } from "./Klient";
 import { Samochod } from "./Samochod";
 
-@Entity()
+@Entity("wypozyczenia")
 export class Wypozyczenie {
-  @PrimaryGeneratedColumn()
-  id_wypozyczenia!: number;
+    @PrimaryGeneratedColumn()
+    id_wypozyczenia!: number;
 
-  @ManyToOne(() => Klient)
-  @JoinColumn({ name: "id_klienta" })
-  id_klienta!: Klient;
+    @Column({ type: "date" })
+    data_wypozyczenia!: Date;
 
-  @ManyToOne(() => Samochod)
-  @JoinColumn({ name: "id_samochodu" })
-  id_samochodu!: Samochod;
+    @Column({ type: "date" })
+    data_zwrotu!: Date;
 
-  @Column()
-  data_wypozyczenia!: Date;
+    @Column("decimal", { precision: 10, scale: 2 })
+    calkowity_koszt!: number;
 
-  @Column()
-  data_zwrotu!: Date;
+    @ManyToOne(() => Klient, (klient) => klient.wypozyczenia, { onDelete: "CASCADE" })
+    klient!: Klient;
 
-  @Column()
-  calkowity_koszt!: number;
+    @ManyToOne(() => Samochod, (samochod) => samochod.wypozyczenia, { onDelete: "CASCADE" })
+    samochod!: Samochod;
 }

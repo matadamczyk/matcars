@@ -1,4 +1,4 @@
-import { createUzytkownik, deleteUzytkownik, getUzytkownicy, getUzytkownik, loginUzytkownik, registerUzytkownik, updateUzytkownik } from "../controllers/uzytkownik.controller";
+import { createUzytkownik, deleteUzytkownik, getUzytkownicy, getUzytkownik, loginUzytkownik, logoutUzytkownik, registerUzytkownik, updateUzytkownik } from "../controllers/uzytkownik.controller";
 
 import { Router } from "express";
 import { body } from "express-validator";
@@ -30,5 +30,7 @@ router.post(
   ],
   loginUzytkownik
 );
+
+router.post("/logout", logoutUzytkownik);
 
 export default router;

@@ -1,12 +1,9 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-export const useStore = defineStore('example', {
-  state: () => ({
-    count: 0
-  }),
-  actions: {
-    increment() {
-      this.count++;
-    }
-  }
+export const useStore = defineStore("matcars", () => {
+  const isLoggedIn = ref<boolean>(false);
+  const isAdmin = ref<boolean>(false);
+
+  return { isLoggedIn, isAdmin };
 });

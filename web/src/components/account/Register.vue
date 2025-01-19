@@ -8,6 +8,23 @@
           <p>Have an account? <a href="#" @click="switchToSignIn">Sign in now!</a></p>
         </div>
         <div class="dialog-body">
+          <label for="firstName">First Name</label>
+          <input
+            id="firstName"
+            type="text"
+            placeholder="First Name"
+            class="input"
+            v-model="firstName"
+          />
+
+          <label for="lastName">Last Name</label>
+          <input
+            id="lastName"
+            type="text"
+            placeholder="Last Name"
+            class="input"
+            v-model="lastName"
+          />
           <label for="email1">Email</label>
           <input
             id="email1"
@@ -35,7 +52,35 @@
             v-model="confirmPassword"
           />
 
+
           <button class="btn btn-primary" @click="handleRegister">Register</button>
+        </div>
+      </div>
+    </Dialog>
+    <Dialog v-model:visible="successVisible" modal :style="{ width: '25rem', position: 'absolute' }">
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h2>Registration Successful</h2>
+        </div>
+        <div class="dialog-body">
+          <p>Your account has been created successfully.</p>
+          <button class="btn btn-primary" @click="closeSuccessDialog">OK</button>
+        </div>
+      </div>
+    </Dialog>
+    <Dialog
+      v-model:visible="successVisible"
+      modal
+      :style="{ width: '25rem', position: 'absolute' }"
+    >
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h2 class="success">Login Successful</h2>
+        </div>
+        <div class="dialog-body">
+          <button class="btn btn-primary" @click="closeSuccessDialog">
+            OK
+          </button>
         </div>
       </div>
     </Dialog>
@@ -60,6 +105,9 @@ const localVisible = ref(props.visible);
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+const firstName = ref("");
+const lastName = ref("");
+const successVisible = ref(false);
 
 watch(localVisible, (newValue) => {
   emit("update:visible", newValue);
@@ -80,21 +128,26 @@ const switchToSignIn = () => {
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
     console.error("Passwords do not match");
-    // Handle password mismatch error, e.g., show error message
     return;
   }
 
   try {
-    const response = await axios.post("/api/uzytkownicy/register", {
+    const response = await axios.post("http://localhost:3050/api/uzytkownicy/register", {
+      imie: firstName.value,
+      nazwisko: lastName.value,
       email: email.value,
       haslo: password.value,
     });
     console.log(response.data);
-    // Handle successful registration, e.g., redirect, show success message, etc.
+    localVisible.value = false;
+    successVisible.value = true;
   } catch (error) {
     console.error("Registration failed:", error);
-    // Handle registration error, e.g., show error message
   }
+};
+
+const closeSuccessDialog = () => {
+  successVisible.value = false;
 };
 </script>
 
@@ -218,6 +271,10 @@ input {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.success {
+  color: var(--white) !important;
 }
 
 </style>

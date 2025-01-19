@@ -2,6 +2,7 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from "vue-router";
 
 import About from "@/components/routes/About.vue";
+import AdminPanel from "@/components/routes/AdminPanel.vue";
 import Contact from "@/components/routes/Contact.vue";
 import Home from "@/components/routes/Home.vue";
 import Offer from "@/components/routes/Offer.vue";
@@ -11,6 +12,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/about", name: "About", component: About },
     { path: "/offer", name: "Offer", component: Offer },
     { path: "/contact", name: "Contact", component: Contact },
+    { path: "/admin", name: "AdminPanel", component: AdminPanel },
 ];
 
 const router = createRouter({

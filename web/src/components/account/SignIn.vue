@@ -9,7 +9,10 @@
         <div class="dialog-header">
           <img src="../../assets/logo.png" alt="logo" />
           <h2>Welcome Back</h2>
-          <p>Don't have an account? <a href="#" @click="switchToRegister">Create today!</a></p>
+          <p>
+            Don't have an account?
+            <a href="#" @click="switchToRegister">Create today!</a>
+          </p>
         </div>
         <div class="dialog-body">
           <label for="email1">Email</label>
@@ -38,15 +41,30 @@
         </div>
       </div>
     </Dialog>
+    <Dialog
+      v-model:visible="successVisible"
+      modal
+      :style="{ width: '25rem', position: 'absolute' }"
+    >
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h2 class="success">Login Successful</h2>
+        </div>
+        <div class="dialog-body">
+          <button class="btn btn-primary" @click="closeSuccessDialog">
+            OK
+          </button>
+        </div>
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from "vue";
+import { useStore } from "@/store/store";
 import axios from "axios";
 import Dialog from "primevue/dialog";
-import InputText from "primevue/inputtext";
-import FloatLabel from "primevue/floatlabel";
 
 const props = defineProps({
   visible: {
@@ -54,6 +72,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const store = useStore();
 
 const emit = defineEmits(["update:visible", "switchToRegister"]);
 
@@ -77,18 +97,26 @@ const switchToRegister = () => {
   emit("switchToRegister");
 };
 
+const successVisible = ref(false);
+
 const handleSignIn = async () => {
   try {
-    const response = await axios.post("/api/uzytkownicy/login", {
+    const response = await axios.post("http://localhost:3050/api/uzytkownicy/login", {
       email: email.value,
       haslo: password.value,
     });
     console.log(response.data);
-    // Handle successful login, e.g., store token, redirect, etc.
+    store.isLoggedIn = true;
+    store.isAdmin = response.data.rola === "admin";
+    localVisible.value = false;
+    successVisible.value = true;
   } catch (error) {
     console.error("Login failed:", error);
-    // Handle login error, e.g., show error message
   }
+};
+
+const closeSuccessDialog = () => {
+  successVisible.value = false;
 };
 </script>
 
@@ -203,6 +231,10 @@ const handleSignIn = async () => {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.success {
+  color: var(--white) !important;
 }
 
 input {
