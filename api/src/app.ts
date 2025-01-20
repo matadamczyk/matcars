@@ -12,16 +12,14 @@ import wypozyczenieRoutes from "./routes/wypozyczenie.routes";
 
 const app = express();
 
-// Configure CORS
 app.use(cors({
-  origin: "http://localhost:8080", // Adjust this to your frontend URL
+  origin: "http://localhost:8080", 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 }));
 
 app.use(express.json());
 
-// Add CSP headers
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -51,14 +49,6 @@ AppDataSource.initialize()
     );
 
     const repo = AppDataSource.getRepository(Klient);
-
-    // const nowyKlient = repo.create({
-    //   imie: "Jan",
-    //   nazwisko: "Kowalski",
-    //   email: "jan.kowalski@example.com",
-    //   telefon: "123456789",
-    // });
-    // await repo.save(nowyKlient);
 
     const klienci = await repo.find();
     console.log("Klienci:", klienci);

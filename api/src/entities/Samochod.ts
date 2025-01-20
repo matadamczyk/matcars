@@ -19,6 +19,9 @@ export class Samochod {
     @Column("decimal", { precision: 10, scale: 2 })
     cena_za_dzien!: number;
 
+    @Column({ nullable: true})
+    zdjecie!: string;
+
     @OneToMany(() => Wypozyczenie, (wypozyczenie) => wypozyczenie.samochod)
     wypozyczenia!: Wypozyczenie[];
 }

@@ -107,6 +107,7 @@ const handleSignIn = async () => {
     });
     console.log(response.data);
     store.isLoggedIn = true;
+    store.setToken(response.data.token);
     store.isAdmin = response.data.rola === "admin";
     localVisible.value = false;
     successVisible.value = true;

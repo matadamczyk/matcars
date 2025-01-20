@@ -18,8 +18,12 @@ export const getWypozyczenie = async (req: Request, res: Response) => {
 export const createWypozyczenie = async (req: Request, res: Response) => {
   const repo = AppDataSource.getRepository(Wypozyczenie);
   const wypozyczenie = repo.create(req.body);
-  const result = await repo.save(wypozyczenie);
-  res.json(result);
+  try {
+    const result = await repo.save(wypozyczenie);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Błąd serwera", error: error });
+  }
 };
 
 export const updateWypozyczenie = async (req: Request, res: Response) => {

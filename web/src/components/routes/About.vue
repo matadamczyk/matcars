@@ -56,6 +56,7 @@
 .about-info {
   max-width: 500px;
   text-align: justify;
+  margin-top: 3rem;
 }
 
 address {

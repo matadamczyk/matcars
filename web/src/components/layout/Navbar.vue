@@ -94,18 +94,11 @@ const handleScroll = () => {
   }
 };
 
-const handleLogout = async () => {
-  try {
-    const response = await axios.post("http://localhost:3050/api/uzytkownicy/logout");
-    console.log(response.data);
-    store.isLoggedIn = false;
-    store.isAdmin = false;
-    router.push("/").then(() => {
-      window.location.reload();
-    });
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
+const handleLogout = () => {
+  store.clearToken();
+  router.push("/").then(() => {
+    window.location.reload();
+  });
 };
 
 onMounted(() => {
