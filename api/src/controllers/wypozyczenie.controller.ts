@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppDataSource } from "../config/database";
+import { Klient } from "../entities/Klient";
 import { Wypozyczenie } from "../entities/Wypozyczenie";
 
 export const getWypozyczenia = async (req: Request, res: Response) => {
@@ -17,7 +18,21 @@ export const getWypozyczenie = async (req: Request, res: Response) => {
 
 export const createWypozyczenie = async (req: Request, res: Response) => {
   const repo = AppDataSource.getRepository(Wypozyczenie);
-  const wypozyczenie = repo.create(req.body);
+  const klientRepo = AppDataSource.getRepository(Klient);
+
+  const { imie, nazwisko, email, telefon } = req.body;
+
+  let klient = await klientRepo.findOneBy({ email });
+  if (!klient) {
+    klient = klientRepo.create({ imie, nazwisko, email, telefon });
+    await klientRepo.save(klient);
+  }
+
+  const wypozyczenie = repo.create({
+    ...req.body,
+    klient: klient,
+  });
+
   try {
     const result = await repo.save(wypozyczenie);
     res.status(201).json(result);

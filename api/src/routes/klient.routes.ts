@@ -1,8 +1,10 @@
+import { createKlient, getKlienci } from "../controllers/klient.controller";
+
 import { Router } from "express";
-import { getKlienci } from "../controllers/klient.controller";
 
 const router = Router();
 
 router.get("/", getKlienci);
+router.post("/", createKlient);
 
 export default router;

@@ -4,50 +4,49 @@
       <h2>Book a <span style="color: var(--orange)">Car</span></h2>
       <form @submit.prevent="confirmBooking">
         <div class="form-data">
-          <div class="form-column">
-            <label for="carModel">Select Your Car Model</label>
-            <select id="carModel" v-model="selectedCarModel">
-              <option v-for="car in availableCars" :key="car.id_samochodu" :value="car.id_samochodu">
-                {{ car.marka }} {{ car.model }}
-              </option>
-            </select>
+          <div class="form-row">
+            <div class="form-column">
+              <label for="carModel">Select Your Car Model</label>
+              <select id="carModel" v-model="selectedCarModel">
+                <option
+                  v-for="car in availableCars"
+                  :key="car.id_samochodu"
+                  :value="car.id_samochodu"
+                >
+                  {{ car.marka }} {{ car.model }}
+                </option>
+              </select>
+            </div>
+            <div class="form-column">
+              <label for="pickupDate">Select Pick-up Date</label>
+              <input type="date" id="pickupDate" v-model="pickupDate" />
+            </div>
+            <div class="form-column">
+              <label for="dropoffDate">Select Drop-off Date</label>
+              <input type="date" id="dropoffDate" v-model="dropoffDate" />
+            </div>
           </div>
-          <div class="form-column">
-            <label for="pickupDate">Select Pick-up Date</label>
-            <input type="date" id="pickupDate" v-model="pickupDate" />
-          </div>
-          <div class="form-column">
-            <label for="dropoffDate">Select Drop-off Date</label>
-            <input type="date" id="dropoffDate" v-model="dropoffDate" />
+          <div class="form-column phone">
+            <label for="telefon">Phone Number</label>
+            <input type="text" id="telefon" v-model="client.telefon" required />
           </div>
         </div>
-        <Button class="submit" label="Submit" />
+        <div class="form-buttons">
+          <Button class="submit" label="Submit" @click="confirmBooking" />
+        </div>
       </form>
     </div>
-    <Dialog v-model:visible="dialogVisible" modal :style="{ width: '25rem', position: 'absolute' }">
+    <Dialog
+      v-model:visible="dialogVisible"
+      modal
+      :style="{ width: '25rem', position: 'absolute' }"
+    >
       <div class="dialog-content">
         <h2>Confirm Booking</h2>
         <p>Are you sure you want to book this car?</p>
         <div class="dialog-footer">
-          <button class="btn btn-primary" @click="openClientDialog">Yes</button>
+          <button class="btn btn-primary" @click="submitForm">Yes</button>
           <button class="btn" @click="dialogVisible = false">No</button>
-        </div>
-      </div>
-    </Dialog>
-    <Dialog v-model:visible="clientDialogVisible" modal :style="{ width: '25rem', position: 'absolute' }">
-      <div class="dialog-content">
-        <h2>Enter Client Details</h2>
-        <div class="dialog-body">
-          <label for="imie">First Name:</label>
-          <input id="imie" v-model="client.imie" required />
-          <label for="nazwisko">Last Name:</label>
-          <input id="nazwisko" v-model="client.nazwisko" required />
-          <label for="email">Email:</label>
-          <input id="email" v-model="client.email" type="email" required />
-        </div>
-        <div class="dialog-footer">
-          <button class="btn btn-primary" @click="submitForm">Submit</button>
-          <button class="btn" @click="clientDialogVisible = false">Cancel</button>
         </div>
       </div>
     </Dialog>
@@ -60,7 +59,10 @@ import axios from "axios";
 import { Car } from "@/interfaces/Car.interface";
 import { Rent } from "@/interfaces/Rent.interface";
 import { Customer } from "@/interfaces/Customer.interface";
+import { useStore } from "@/store/store";
 import Dialog from "primevue/dialog";
+
+const store = useStore();
 
 const cars = ref<Car[]>([]);
 const availableCars = ref<Car[]>([]);
@@ -68,18 +70,22 @@ const selectedCarModel = ref<number | null>(null);
 const pickupDate = ref<string>("");
 const dropoffDate = ref<string>("");
 const dialogVisible = ref(false);
-const clientDialogVisible = ref(false);
 const client = ref<Customer>({
   id_klienta: 0,
-  imie: "",
-  nazwisko: "",
-  email: "",
+  imie: store.user?.imie || "",
+  nazwisko: store.user?.nazwisko || "",
+  email: store.user?.email || "",
   telefon: "",
 });
 
 const fetchCars = async () => {
   try {
-    const response = await axios.get("http://localhost:3050/api/samochody");
+    const response = await axios.get("http://localhost:3050/api/samochody", {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    });
     cars.value = response.data;
     availableCars.value = response.data;
   } catch (error) {
@@ -88,33 +94,57 @@ const fetchCars = async () => {
 };
 
 const confirmBooking = () => {
-  if (!selectedCarModel.value || !pickupDate.value || !dropoffDate.value) {
+  if (
+    !selectedCarModel.value ||
+    !pickupDate.value ||
+    !dropoffDate.value ||
+    !client.value.telefon
+  ) {
     alert("Please fill in all fields.");
     return;
   }
   dialogVisible.value = true;
 };
 
-const openClientDialog = () => {
-  dialogVisible.value = false;
-  clientDialogVisible.value = true;
-};
-
 const submitForm = async () => {
   try {
-    const clientResponse = await axios.post("http://localhost:3050/api/klienci", client.value);
+    await store.fetchUserData();
+    const userDetails = store.getUserDetails();
+    if (userDetails) {
+      client.value.imie = userDetails.imie;
+      client.value.nazwisko = userDetails.nazwisko;
+      client.value.email = userDetails.email;
+    }
+
+    if (!client.value.imie || !client.value.nazwisko || !client.value.email) {
+      alert("User details are missing.");
+      return;
+    }
+
+    const clientResponse = await axios.post(
+      "http://localhost:3050/api/klienci",
+      client.value
+    );
+
     const newRent: Rent = {
       id_klienta: clientResponse.data.id_klienta,
       id_samochodu: selectedCarModel.value!,
       data_wypozyczenia: pickupDate.value,
       data_zwrotu: dropoffDate.value,
-      calkowity_koszt: calculateCost(selectedCarModel.value!, pickupDate.value, dropoffDate.value),
+      calkowity_koszt: calculateCost(
+        selectedCarModel.value!,
+        pickupDate.value,
+        dropoffDate.value
+      ),
     };
 
     await axios.post("http://localhost:3050/api/wypozyczenia", newRent);
 
-    availableCars.value = availableCars.value.filter(car => car.id_samochodu !== selectedCarModel.value);
-    clientDialogVisible.value = false;
+    availableCars.value = availableCars.value.filter(
+      (car) => car.id_samochodu !== selectedCarModel.value
+    );
+    dialogVisible.value = false;
+    store.clearClientDetails();
     alert("Car booked successfully!");
   } catch (error) {
     console.error("Error booking car:", error);
@@ -122,8 +152,12 @@ const submitForm = async () => {
   }
 };
 
-const calculateCost = (carId: number, pickupDate: string, dropoffDate: string): number => {
-  const car = cars.value.find(car => car.id_samochodu === carId);
+const calculateCost = (
+  carId: number,
+  pickupDate: string,
+  dropoffDate: string
+): number => {
+  const car = cars.value.find((car) => car.id_samochodu === carId);
   if (!car) return 0;
 
   const pickup = new Date(pickupDate);
@@ -151,7 +185,7 @@ onMounted(fetchCars);
 }
 .rent-panel {
   box-shadow: 0 0 5px var(--dark-grey);
-  height: 45%;
+  height: 60%;
   width: 70%;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 30px;
@@ -166,13 +200,21 @@ form {
 }
 .form-data {
   display: flex;
+  flex-direction: column;
+}
+.form-row {
+  display: flex;
   flex-direction: row;
 }
 .form-column {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin: 0 30px;
   text-align: center;
+}
+.phone {
+  margin-top: 1rem;
 }
 label {
   font-weight: 600;
@@ -188,6 +230,13 @@ select {
   margin-top: 10px;
   text-align: center;
 }
+
+input:focus, select:focus {
+  border: 2px solid var(--orange);
+  box-shadow: 0 0 15px 0 var(--orange);
+  outline: none;
+}
+
 .submit {
   font-weight: 500;
   font-size: 25px;
@@ -200,6 +249,25 @@ select {
   margin: 3rem;
 }
 .p-button.p-component.submit:hover {
+  border: 1px solid var(--orange);
+  background-color: var(--orange);
+  padding: 10px;
+  border-radius: 15px;
+  color: var(--white);
+  box-shadow: 0 0 15px var(--light-orange);
+}
+.user-details {
+  font-weight: 500;
+  font-size: 25px;
+  position: relative;
+  border: 1px solid var(--orange);
+  background-color: var(--orange);
+  padding: 10px;
+  border-radius: 15px;
+  color: var(--white);
+  margin: 3rem;
+}
+.p-button.p-component.user-details:hover {
   border: 1px solid var(--orange);
   background-color: var(--orange);
   padding: 10px;
