@@ -104,7 +104,7 @@ h2 {
   border: 2px solid var(--orange);
   box-shadow: 0 0 15px var(--orange);
   border-radius: 15px;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 table {
@@ -114,22 +114,6 @@ table {
   border-spacing: 0;
   border-radius: 15px;
   overflow: hidden;
-}
-
-th:first-child {
-  border-top-left-radius: 15px;
-}
-
-th:last-child {
-  border-top-right-radius: 15px;
-}
-
-tr:last-child td:first-child {
-  border-bottom-left-radius: 15px;
-}
-
-tr:last-child td:last-child {
-  border-bottom-right-radius: 15px;
 }
 
 th, td {
