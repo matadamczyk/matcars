@@ -29,6 +29,12 @@
           v-if="store.isAdmin"
           >Admin Panel</RouterLink
         >
+        <RouterLink
+          to="/user"
+          :class="{ link: true, active: activePath === '/user' }"
+          v-if="store.isLoggedIn && !store.isAdmin"
+          >User Panel</RouterLink
+        >
       </div>
       <div class="login" v-if="!store.isLoggedIn">
         <Button class="signin" label="Sign in" @click="signin = true"></Button>
@@ -54,7 +60,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useStore } from "@/store/store";
+import { useStore } from "../../store/store";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
 import axios from "axios";
@@ -138,7 +144,7 @@ onBeforeUnmount(() => {
   border-radius: 30px;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(160, 160, 160, 0.3);
+  border: 2px solid rgba(160, 160, 160, 0.3);
 }
 .logo {
   height: 8rem;

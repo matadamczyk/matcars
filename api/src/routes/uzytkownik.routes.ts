@@ -1,10 +1,11 @@
-import { createUzytkownik, deleteUzytkownik, getUzytkownicy, getUzytkownik, loginUzytkownik, logoutUzytkownik, registerUzytkownik, updateUzytkownik } from "../controllers/uzytkownik.controller";
+import { createUzytkownik, deleteUzytkownik, getCurrentUser, getUzytkownicy, getUzytkownik, loginUzytkownik, logoutUzytkownik, registerUzytkownik, updateUzytkownik } from "../controllers/uzytkownik.controller";
 
 import { Router } from "express";
 import { body } from "express-validator";
 
 const router = Router();
 
+router.get("/me", getCurrentUser);
 router.get("/", getUzytkownicy);
 router.get("/:id", getUzytkownik);
 router.post("/", createUzytkownik);

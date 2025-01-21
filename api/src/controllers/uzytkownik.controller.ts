@@ -103,3 +103,29 @@ export const loginUzytkownik = async (req: Request, res: Response): Promise<void
 export const logoutUzytkownik = (req: Request, res: Response): void => {
   res.status(200).json({ message: "Logged out successfully" });
 };
+
+export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      res.status(401).json({ message: "No token provided" });
+      return;
+    }
+
+    const decoded = jwt.verify(token, "SECRET_KEY") as { id: number, rola: string };
+  
+    const repo = AppDataSource.getRepository(Uzytkownik);
+    const user = await repo.findOneBy({ id_uzytkownika: decoded.id });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    const { haslo, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};

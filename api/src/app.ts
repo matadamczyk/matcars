@@ -13,9 +13,12 @@ import wypozyczenieRoutes from "./routes/wypozyczenie.routes";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:8080", 
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: ["http://localhost:8080", "http://127.0.0.1:8080"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Authorization"],
   credentials: true,
+  optionsSuccessStatus: 200
 }));
 
 app.use(express.json());

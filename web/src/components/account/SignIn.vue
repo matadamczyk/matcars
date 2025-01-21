@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from "vue";
-import { useStore } from "@/store/store";
+import { useStore } from "../../store/store";
 import axios from "axios";
 import Dialog from "primevue/dialog";
 

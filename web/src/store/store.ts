@@ -14,6 +14,23 @@ interface DecodedToken {
   email: string;
 }
 
+axios.defaults.baseURL = 'http://localhost:3050/api';
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const useStore = defineStore("matcars", () => {
   const isLoggedIn = ref<boolean>(false);
   const isAdmin = ref<boolean>(false);

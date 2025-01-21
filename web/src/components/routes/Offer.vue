@@ -101,8 +101,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import axios from "axios";
-import { useStore } from "@/store/store";
-import { Car } from "@/interfaces/Car.interface";
+import { useStore } from "../../store/store";
+import { Car } from "../../interfaces/Car.interface";
 import Dialog from "primevue/dialog";
 
 const store = useStore();
