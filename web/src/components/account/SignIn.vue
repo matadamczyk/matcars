@@ -245,4 +245,10 @@ input {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.dialog-content input:focus {
+  border: 2px solid var(--orange);
+  box-shadow: 0 0 15px 0 var(--orange);
+  outline: none;
+}
 </style>
