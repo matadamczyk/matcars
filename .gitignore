@@ -5,3 +5,5 @@ idea.txt
 **/*.png
 **/*.jpg
 **/package-lock.json
+**/init-db.sh
+**/migrate.sh
