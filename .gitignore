@@ -7,3 +7,4 @@ idea.txt
 **/package-lock.json
 **/init-db.sh
 **/migrate.sh
+**/.DS_Store
