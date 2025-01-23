@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Klient } from "./Klient";
 import { Samochod } from "./Samochod";
+import { Uzytkownik } from "./Uzytkownik";
 
 @Entity("wypozyczenia")
 export class Wypozyczenie {
@@ -14,12 +15,24 @@ export class Wypozyczenie {
     @Column({ type: "date" })
     data_zwrotu!: Date;
 
-    @Column("decimal", { precision: 10, scale: 2 })
+    @Column({ type: "decimal", precision: 10, scale: 2 })
     calkowity_koszt!: number;
 
-    @ManyToOne(() => Klient, (klient) => klient.wypozyczenia, { onDelete: "CASCADE" })
+    @Column({ default: 'aktywne' })
+    status!: string;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    created_at!: Date;
+
+    @ManyToOne(() => Klient, klient => klient.wypozyczenia)
+    @JoinColumn({ name: "id_klienta" })
     klient!: Klient;
 
-    @ManyToOne(() => Samochod, (samochod) => samochod.wypozyczenia, { onDelete: "CASCADE" })
+    @ManyToOne(() => Samochod, samochod => samochod.wypozyczenia)
+    @JoinColumn({ name: "id_samochodu" })
     samochod!: Samochod;
+
+    @ManyToOne(() => Uzytkownik, uzytkownik => uzytkownik.utworzone_wypozyczenia)
+    @JoinColumn({ name: "created_by" })
+    created_by!: Uzytkownik;
 }

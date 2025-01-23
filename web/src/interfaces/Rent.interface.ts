@@ -7,6 +7,8 @@ export interface Rent {
     id_klienta: number;
     imie: string;
     nazwisko: string;
+    email: string;
+    telefon: string;
   };
   samochod: {
     id_samochodu: number;

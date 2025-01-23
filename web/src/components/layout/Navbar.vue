@@ -63,7 +63,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useStore } from "../../store/store";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
-import axios from "axios";
 
 const store = useStore();
 

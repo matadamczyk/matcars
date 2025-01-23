@@ -66,7 +66,12 @@ const deleteRental = async (id: number) => {
   }
 
   try {
-    await axios.delete(`/wypozyczenia/${id}`);
+    const token = store.getToken(); 
+    await axios.delete(`/wypozyczenia/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     await fetchRentals();
   } catch (error) {
     console.error('Error deleting rental:', error);
@@ -141,7 +146,7 @@ tr:hover {
 }
 
 .delete-btn:hover {
-  background-color: #cc0000;
+  box-shadow: 0 0 10px 0 red;
 }
 
 .no-rentals {

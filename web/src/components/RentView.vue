@@ -56,10 +56,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import { Car } from "../interfaces/Car.interface";
-import { Rent } from "../interfaces/Rent.interface";
-import { Customer } from "../interfaces/Customer.interface";
-import { useStore } from "../store/store";
+import { Car } from "@/interfaces/Car.interface";
+import { Rent } from "@/interfaces/Rent.interface";
+import { Customer } from "@/interfaces/Customer.interface";
+import { useStore } from "@/store/store";
 import Dialog from "primevue/dialog";
 
 const store = useStore();
@@ -80,28 +80,16 @@ const client = ref<Customer>({
 
 const fetchCars = async () => {
   try {
-    const response = await axios.get("/samochody");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${store.token}`,
+      },
+    };
+    const response = await axios.get("http://localhost:3050/api/samochody", config);
     cars.value = response.data;
-    availableCars.value = response.data.filter((car: Car) => {
-      return true;
-    });
+    availableCars.value = response.data;
   } catch (error) {
     console.error("Error fetching cars:", error);
-  }
-};
-
-const checkCarAvailability = async (carId: number, startDate: string, endDate: string) => {
-  try {
-    const response = await axios.get(`/wypozyczenia/availability/${carId}`, {
-      params: {
-        startDate,
-        endDate
-      }
-    });
-    return response.data.available;
-  } catch (error) {
-    console.error("Error checking car availability:", error);
-    return false;
   }
 };
 
@@ -120,93 +108,63 @@ const confirmBooking = () => {
 
 const submitForm = async () => {
   try {
-    const axiosConfig = {
+    const config = {
       headers: {
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${store.token}`,
       },
-      withCredentials: true
     };
-
-    // Check car availability first
-    const isAvailable = await checkCarAvailability(
-      selectedCarModel.value!,
-      pickupDate.value,
-      dropoffDate.value
-    );
-
-    if (!isAvailable) {
-      dialogVisible.value = false;
-      alert("This car is not available for the selected dates. Please choose different dates or another car.");
-      return;
-    }
-
     await store.fetchUserData();
     const userDetails = store.getUserDetails();
-    
-    if (!userDetails) {
-      alert("Please log in first");
-      dialogVisible.value = false;
+    if (userDetails) {
+      client.value.imie = userDetails.imie;
+      client.value.nazwisko = userDetails.nazwisko;
+      client.value.email = userDetails.email;
+    }
+
+    if (!client.value.imie || !client.value.nazwisko || !client.value.email) {
+      alert("User details are missing.");
       return;
     }
 
-    const clientData = {
-      imie: userDetails.imie,
-      nazwisko: userDetails.nazwisko,
-      email: userDetails.email,
-      telefon: client.value.telefon
-    };
-
-    // Create or update client
     const clientResponse = await axios.post(
       "http://localhost:3050/api/klienci",
-      clientData,
-      axiosConfig
+      client.value,
+      config
     );
 
-    // Calculate rental cost
-    const selectedCar = cars.value.find(car => car.id_samochodu === selectedCarModel.value);
-    if (!selectedCar) {
-      throw new Error("Selected car not found");
-    }
-
-    const totalCost = calculateCost(
-      selectedCarModel.value!,
-      pickupDate.value,
-      dropoffDate.value
-    );
-
-    // Create rental
-    const rentalData = {
+    const newRent = {
       data_wypozyczenia: pickupDate.value,
       data_zwrotu: dropoffDate.value,
-      calkowity_koszt: totalCost,
-      klient: clientResponse.data,
-      samochod: { id_samochodu: selectedCarModel.value }
+      calkowity_koszt: calculateCost(
+        selectedCarModel.value!,
+        pickupDate.value,
+        dropoffDate.value
+      ),
+      klient: {
+        id_klienta: clientResponse.data.id_klienta,
+        imie: client.value.imie,
+        nazwisko: client.value.nazwisko,
+        email: client.value.email,
+        telefon: client.value.telefon,
+      },
+      samochod: {
+        id_samochodu: selectedCarModel.value!,
+        marka: availableCars.value.find(car => car.id_samochodu === selectedCarModel.value)!.marka,
+        model: availableCars.value.find(car => car.id_samochodu === selectedCarModel.value)!.model,
+      }
     };
 
-    await axios.post(
-      "http://localhost:3050/api/wypozyczenia",
-      rentalData,
-      axiosConfig
+    await axios.post("http://localhost:3050/api/wypozyczenia", newRent, config);
+
+    availableCars.value = availableCars.value.filter(
+      (car) => car.id_samochodu !== selectedCarModel.value
     );
-
-    // Show success message and reset form
     dialogVisible.value = false;
-    alert("Car rented successfully!");
-    
-    // Reset form
-    selectedCarModel.value = null;
-    pickupDate.value = "";
-    dropoffDate.value = "";
-    client.value.telefon = "";
-    
-    // Refresh available cars
-    await fetchCars();
-
+    store.clearClientDetails();
+    alert("Car booked successfully!");
   } catch (error) {
-    console.error("Error during rental process:", error);
-    dialogVisible.value = false;
-    alert("Failed to complete the rental. Please try again.");
+    console.error("Error booking car:", error);
+    alert("Failed to book the car.");
   }
 };
 
@@ -289,8 +247,7 @@ select {
   text-align: center;
 }
 
-input:focus,
-select:focus {
+input:focus, select:focus {
   border: 2px solid var(--orange);
   box-shadow: 0 0 15px 0 var(--orange);
   outline: none;

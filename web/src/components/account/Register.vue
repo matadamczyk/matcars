@@ -52,6 +52,7 @@
             v-model="confirmPassword"
           />
 
+          <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
           <button class="btn btn-primary" @click="handleRegister">Register</button>
         </div>
@@ -108,6 +109,7 @@ const confirmPassword = ref("");
 const firstName = ref("");
 const lastName = ref("");
 const successVisible = ref(false);
+const errorMessage = ref("");
 
 watch(localVisible, (newValue) => {
   emit("update:visible", newValue);
@@ -125,9 +127,15 @@ const switchToSignIn = () => {
   emit("switchToSignIn");
 };
 
+const getRoleId = (email: string) => {
+  return email.includes("admin") ? 1 : 3;
+};
+
+const roleId = getRoleId(email.value);
+
 const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
-    console.error("Passwords do not match");
+    errorMessage.value = "Passwords do not match";
     return;
   }
 
@@ -137,12 +145,14 @@ const handleRegister = async () => {
       nazwisko: lastName.value,
       email: email.value,
       haslo: password.value,
-    });
+      rola_id: roleId,
+    }, { withCredentials: true });
     console.log(response.data);
     localVisible.value = false;
     successVisible.value = true;
   } catch (error) {
     console.error("Registration failed:", error);
+    errorMessage.value = (error as any).response?.data?.message || "Registration failed";
   }
 };
 
@@ -283,4 +293,8 @@ input {
   color: var(--white) !important;
 }
 
+.error-message {
+  color: red;
+  margin-top: 1rem;
+}
 </style>

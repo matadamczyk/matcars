@@ -1,0 +1,8 @@
+[instance]
+environment = "prod"
+instance_name = "inhumanely-supportive-werewolf"
+cpu = "0.25"
+memory = "1Gi"
+storage = "10Gi"
+replicas = 1
+stack_type = "Standard"

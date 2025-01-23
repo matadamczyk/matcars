@@ -5,4 +5,5 @@ export interface Car {
   rok_produkcji: number;
   cena_za_dzien: number;
   zdjecie?: string;
+  status?: string;
 }

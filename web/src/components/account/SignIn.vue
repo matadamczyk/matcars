@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from "vue";
-import { useStore } from "../../store/store";
+import { useStore } from "@/store/store";
 import axios from "axios";
 import Dialog from "primevue/dialog";
 
@@ -108,7 +108,7 @@ const handleSignIn = async () => {
     console.log(response.data);
     store.isLoggedIn = true;
     store.setToken(response.data.token);
-    store.isAdmin = response.data.rola === "admin";
+    store.isAdmin = response.data.user.rola === "admin";
     localVisible.value = false;
     successVisible.value = true;
   } catch (error) {
