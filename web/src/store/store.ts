@@ -55,6 +55,10 @@ export const useStore = defineStore("matcars", () => {
     user.value = null;
   };
 
+  const getToken = () => {
+    return token.value;
+  };
+
   const getUserDetails = () => {
     return user.value;
   };
@@ -114,6 +118,7 @@ export const useStore = defineStore("matcars", () => {
     getClientDetails, 
     clearClientDetails,
     getUserDetails,
-    fetchUserData 
+    fetchUserData,
+    getToken 
   };
 });

@@ -1,6 +1,5 @@
 <template>
   <div class="offer-container">
-    <!-- <h1 v-if="cars.length === 0">Our <span style="color: var(--orange)">fleet</span></h1> -->
     <div class="search-bar">
       <input
         v-model="searchQuery"
@@ -11,12 +10,12 @@
         <i class="pi pi-filter"></i>
         <select v-model="sortOption">
           <option value="">Sort by</option>
-          <option value="price_asc">Price (Low to High)</option>
-          <option value="price_desc">Price (High to Low)</option>
-          <option value="name_asc">Name (A to Z)</option>
-          <option value="name_desc">Name (Z to A)</option>
-          <option value="year_asc">Year (Oldest to Newest)</option>
-          <option value="year_desc">Year (Newest to Oldest)</option>
+          <option value="cena_za_dzien_asc">Price (Low to High)</option>
+          <option value="cena_za_dzien_desc">Price (High to Low)</option>
+          <option value="marka_asc">Brand (A to Z)</option>
+          <option value="marka_desc">Brand (Z to A)</option>
+          <option value="rok_produkcji_asc">Year (Oldest to Newest)</option>
+          <option value="rok_produkcji_desc">Year (Newest to Oldest)</option>
         </select>
       </div>
       <button class="add-car" v-if="isAdmin" @click="openDialog">
@@ -59,7 +58,7 @@
       <div class="dialog-content">
         <form @submit.prevent="saveCar">
           <div class="dialog-header">
-            <h2>{{ isEditing ? "Update Car" : "Add Car" }}</h2>
+            <h2 style="color: var(--white);">{{ isEditing ? "Update Car" : "Add Car" }}</h2>
           </div>
           <div class="dialog-body">
             <label for="marka">Brand:</label>
@@ -85,10 +84,10 @@
             <input id="zdjecie" v-model="newCar.zdjecie" />
           </div>
           <div class="dialog-footer">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="add">
               {{ isEditing ? "Update" : "Add" }}
             </button>
-            <button type="button" class="btn" @click="closeDialog">
+            <button type="button" class="cancel" @click="closeDialog">
               Cancel
             </button>
           </div>
@@ -119,6 +118,7 @@ const newCar = ref<Car>({
   rok_produkcji: 0,
   cena_za_dzien: 0,
   zdjecie: "",
+  status: "dostepny",
 });
 const dialogVisible = ref(false);
 const isEditing = ref(false);
@@ -126,7 +126,15 @@ const loading = ref(true);
 
 const fetchCars = async () => {
   try {
-    const response = await axios.get("http://localhost:3050/api/samochody");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${store.token}`,
+      },
+    };
+    const response = await axios.get(
+      "http://localhost:3050/api/samochody",
+      config
+    );
     cars.value = response.data;
     filteredCars.value = cars.value;
   } catch (error) {
@@ -146,8 +154,37 @@ const filterCars = () => {
 
 const sortCars = async () => {
   try {
+    if (!sortOption.value) return;
+
+    const lastUnderscoreIndex = sortOption.value.lastIndexOf("_");
+    const sortBy = sortOption.value.substring(0, lastUnderscoreIndex);
+    const order = sortOption.value.substring(lastUnderscoreIndex + 1);
+
+    console.log("Sorting by:", sortBy, "Order:", order); 
+
+    if (!sortBy || !order) {
+      console.error("Invalid sort option:", sortOption.value);
+      return;
+    }
+
+    const validSortFields = [
+      "cena_za_dzien",
+      "marka",
+      "model",
+      "rok_produkcji",
+    ];
+    const validOrderValues = ["asc", "desc"];
+
+    if (
+      !validSortFields.includes(sortBy) ||
+      !validOrderValues.includes(order)
+    ) {
+      console.error("Invalid sort option:", sortOption.value);
+      return;
+    }
+
     const response = await axios.get(
-      `http://localhost:3050/api/samochody?sort=${sortOption.value}`
+      `http://localhost:3050/api/samochody/sort?sortBy=${sortBy}&order=${order}`
     );
     filteredCars.value = response.data;
   } catch (error) {
@@ -157,10 +194,16 @@ const sortCars = async () => {
 
 const saveCar = async () => {
   try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${store.token}`,
+      },
+    };
     if (isEditing.value) {
       await axios.put(
         `http://localhost:3050/api/samochody/${newCar.value.id_samochodu}`,
-        newCar.value
+        newCar.value,
+        config
       );
       const index = cars.value.findIndex(
         (car) => car.id_samochodu === newCar.value.id_samochodu
@@ -171,7 +214,8 @@ const saveCar = async () => {
     } else {
       const response = await axios.post(
         "http://localhost:3050/api/samochody",
-        newCar.value
+        newCar.value,
+        config
       );
       cars.value.push(response.data);
     }
@@ -190,7 +234,12 @@ const editCar = (car: Car) => {
 
 const removeCar = async (id: number) => {
   try {
-    await axios.delete(`http://localhost:3050/api/samochody/${id}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${store.token}`,
+      },
+    };
+    await axios.delete(`http://localhost:3050/api/samochody/${id}`, config);
     cars.value = cars.value.filter((car) => car.id_samochodu !== id);
     filterCars();
   } catch (error) {
@@ -211,13 +260,18 @@ const closeDialog = () => {
     rok_produkcji: 0,
     cena_za_dzien: 0,
     zdjecie: "",
+    status: "dostepny",
   };
   isEditing.value = false;
 };
 
 onMounted(fetchCars);
 
-watch(sortOption, sortCars);
+watch(sortOption, () => {
+  if (sortOption.value) {
+    sortCars();
+  }
+});
 </script>
 
 <style scoped>
@@ -249,7 +303,6 @@ input {
   gap: 1rem;
 }
 .car-item {
-  /* margin: 1rem; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -430,5 +483,31 @@ input {
   font-size: 1.5rem;
   color: var(--orange);
   margin-top: 2rem;
+}
+
+button.add, button.cancel {
+  padding: 10px;
+  border: none;
+  margin: 1rem;
+  border-radius: 10px;
+  color: var(--white);
+  background-color: var(--orange);
+  cursor: pointer;
+}
+
+button.cancel {
+  background-color: var(--light-grey);
+}
+
+button.add:hover {
+  box-shadow: 0 0 10px 0 var(--orange);
+}
+
+button.cancel:hover {
+  box-shadow: 0 0 10px 0 var(--white);
+}
+
+button {
+  cursor: pointer;
 }
 </style>
