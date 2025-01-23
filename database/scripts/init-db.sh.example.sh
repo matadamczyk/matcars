@@ -12,5 +12,4 @@ echo "Creating backup..."
 pg_dump "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}" > "backup_$(date +%Y%m%d_%H%M%S).sql"
 
 echo "Applying migrations..."
-$PSQL -f database/migrations/002_update_existing_structure.sql
-
+$PSQL -f database/migrations/...

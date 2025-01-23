@@ -1,3 +1,4 @@
+-- Tabela logów audytowych
 CREATE TABLE audit_logs (
     id_log SERIAL PRIMARY KEY,
     tabela VARCHAR(50) NOT NULL,
@@ -8,10 +9,11 @@ CREATE TABLE audit_logs (
     nowe_dane JSONB
 );
 
+-- Funkcja logująca zmiany
 CREATE OR REPLACE FUNCTION log_changes()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO audit_logs (
+    INSERT INTO test.audit_logs (
         tabela,
         operacja,
         uzytkownik_id,
@@ -20,7 +22,7 @@ BEGIN
     ) VALUES (
         TG_TABLE_NAME,
         TG_OP,
-        current_setting('app.current_user_id')::INTEGER,
+        TG_ARGV[0]::INTEGER,
         CASE WHEN TG_OP IN ('UPDATE', 'DELETE') THEN row_to_json(OLD) ELSE NULL END,
         CASE WHEN TG_OP IN ('UPDATE', 'INSERT') THEN row_to_json(NEW) ELSE NULL END
     );
@@ -28,6 +30,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Triggery audytowe
 CREATE TRIGGER audit_wypozyczenia_changes
     AFTER INSERT OR UPDATE OR DELETE ON wypozyczenia
     FOR EACH ROW EXECUTE FUNCTION log_changes();
