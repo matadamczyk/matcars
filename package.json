@@ -4,28 +4,53 @@
   "scripts": {
     "start:api": "cd ./api/src/ && nodemon server.ts",
     "start:web": "cd web && npm run serve",
-    "start": "concurrently \"npm run start:api\" \"npm run start:web\""
+    "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
+    "typeorm": "cd ./api/ && typeorm-ts-node-commonjs"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/jwt-decode": "^3.1.0",
+    "@types/node": "^22.9.3",
     "@types/pg": "^8.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
     "concurrently": "^6.2.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^8.0.3",
     "helmet": "^8.0.0",
     "jwt-decode": "^4.0.0",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",
+    "prettier": "^2.4.1",
+    "sass": "^1.32.7",
+    "sass-loader": "^12.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
+    "pinia": "^2.2.6",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "vue": "^3.5.13",
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.0.3"
   }
 }
