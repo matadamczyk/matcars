@@ -1,4 +1,4 @@
-import { authenticateToken, checkRole } from '../middleware/auth';
+import { authenticateToken, checkRole } from '../middleware/auth.middleware';
 import {
     createUzytkownik,
     deleteUzytkownik,
@@ -16,13 +16,12 @@ import { Router } from 'express';
 
 const router = Router();
 
-// Publiczne endpointy
 router.post('/login', loginUzytkownik);
 router.post('/register', registerUzytkownik);
 router.post('/logout', logoutUzytkownik);
 
-// Chronione endpointy
 router.get('/current', authenticateToken, getCurrentUser);
+router.get('/me', authenticateToken, getCurrentUser);
 router.get('/', authenticateToken, checkRole(['admin']), getUzytkownicy);
 router.get('/:id', authenticateToken, checkRole(['admin']), getUzytkownik);
 router.post('/', authenticateToken, checkRole(['admin']), createUzytkownik);

@@ -6,6 +6,8 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import klientRoutes from "./routes/klient.routes";
+import logiRoutes from "./routes/logi.routes";
+import reportRoutes from "./routes/report.routes";
 import roleRoutes from "./routes/role.routes";
 import samochodRoutes from "./routes/samochod.routes";
 import uzytkownikRoutes from "./routes/uzytkownik.routes";
@@ -35,15 +37,19 @@ app.use(
   })
 );
 
+app.options("*", cors()); 
+
 app.get("/", (req, res) => {
   res.send("Welcome to the API");
 });
 
 app.use("/api/klienci", klientRoutes);
+app.use("/api/logi", logiRoutes);
 app.use("/api/samochody", samochodRoutes);
 app.use("/api/wypozyczenia", wypozyczenieRoutes);
 app.use("/api/uzytkownicy", uzytkownikRoutes);
 app.use("/api/role", roleRoutes);
+app.use("/api/reports", reportRoutes); 
 
 AppDataSource.initialize()
   .then(async () => {

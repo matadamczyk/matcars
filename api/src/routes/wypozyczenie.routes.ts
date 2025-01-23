@@ -1,4 +1,4 @@
-import { authenticateToken, checkRole } from '../middleware/auth';
+import { authenticateToken, checkRole } from '../middleware/auth.middleware';
 import {
     checkAvailability,
     createWypozyczenie,
@@ -15,9 +15,9 @@ const router = Router();
 router.get("/", getWypozyczenia);
 router.get("/:id", getWypozyczenie);
 router.get("/availability/:carId", checkAvailability);
+router.delete("/:id", authenticateToken, deleteWypozyczenie);
 
-router.post("/", authenticateToken, checkRole(['admin']), createWypozyczenie);
+router.post("/", authenticateToken, createWypozyczenie); 
 router.put("/:id", authenticateToken, checkRole(['admin']), updateWypozyczenie);
-router.delete("/:id", authenticateToken, checkRole(['admin']), deleteWypozyczenie);
 
 export default router;

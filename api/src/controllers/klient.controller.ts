@@ -5,33 +5,45 @@ import { Klient } from '../entities/Klient';
 import { Uzytkownik } from '../entities/Uzytkownik';
 
 export const createKlient = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { imie, nazwisko, email, telefon, id_uzytkownika } = req.body;
-        
-        const klientRepository = AppDataSource.getRepository(Klient);
-        const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
+  try {
+    const { imie, nazwisko, email, telefon, id_uzytkownika } = req.body;
 
-        // Sprawdź czy użytkownik istnieje
-        const uzytkownik = await uzytkownikRepository.findOneBy({ id_uzytkownika });
-        if (!uzytkownik) {
-            res.status(400).json({ message: "Użytkownik nie istnieje" });
-            return;
-        }
+    const klientRepository = AppDataSource.getRepository(Klient);
+    const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
 
-        const klient = klientRepository.create({
-            imie,
-            nazwisko,
-            email,
-            telefon,
-            uzytkownik
-        });
-
-        await klientRepository.save(klient);
-        res.status(201).json(klient);
-    } catch (error) {
-        console.error("Error creating client:", error);
-        res.status(500).json({ message: "Błąd serwera", error });
+    const uzytkownik = await uzytkownikRepository.findOneBy({ id_uzytkownika });
+    if (!uzytkownik) {
+      res.status(400).json({ message: "Użytkownik nie istnieje" });
+      return;
     }
+
+    let klient = await klientRepository.findOne({
+      where: { uzytkownik: { id_uzytkownika } },
+      relations: ['uzytkownik']
+    });
+
+    if (klient) {
+      klient.imie = imie;
+      klient.nazwisko = nazwisko;
+      klient.email = email;
+      klient.telefon = telefon;
+      await klientRepository.save(klient);
+      res.status(200).json(klient);
+    } else {
+      klient = klientRepository.create({
+        imie,
+        nazwisko,
+        email,
+        telefon,
+        uzytkownik,
+      });
+      await klientRepository.save(klient);
+      res.status(201).json(klient);
+    }
+  } catch (error) {
+    console.error("Error creating client:", error);
+    res.status(500).json({ message: "Błąd serwera", error });
+  }
 };
 
 export const getKlienci = async (req: Request, res: Response) => {

@@ -1,4 +1,4 @@
-import { authenticateToken, checkRole } from '../middleware/auth';
+import { authenticateToken, checkRole } from '../middleware/auth.middleware';
 import {
     createKlient,
     deleteKlient,
@@ -11,12 +11,10 @@ import { Router } from 'express';
 
 const router = Router();
 
-// Publiczne endpointy
-router.get('/', getKlienci);
-router.get('/:id', getKlient);
+router.get('/', authenticateToken, getKlienci);
+router.get('/:id', authenticateToken, getKlient);
 
-// Chronione endpointy (tylko dla admina)
-router.post('/', authenticateToken, checkRole(['admin']), createKlient);
+router.post('/', authenticateToken, createKlient); 
 router.put('/:id', authenticateToken, checkRole(['admin']), updateKlient);
 router.delete('/:id', authenticateToken, checkRole(['admin']), deleteKlient);
 

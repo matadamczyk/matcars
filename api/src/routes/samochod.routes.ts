@@ -1,4 +1,4 @@
-import { authenticateToken, checkRole } from '../middleware/auth';
+import { authenticateToken, checkRole } from '../middleware/auth.middleware';
 import {
     createSamochod,
     deleteSamochod,
@@ -13,10 +13,10 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/', getSamochody);
-router.get('/:id', getSamochod);
-router.get('/search', getFilteredSamochody);
 router.get('/sort', sortSamochody); 
+router.get('/search', getFilteredSamochody);
+router.get('/:id', getSamochod);
+router.get('/', getSamochody);
 
 router.post('/', authenticateToken, checkRole(['admin']), createSamochod);
 router.put('/:id', authenticateToken, checkRole(['admin']), updateSamochod);

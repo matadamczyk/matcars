@@ -7,13 +7,13 @@ export class Samochod {
     @PrimaryGeneratedColumn()
     id_samochodu!: number;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar', length: 50, nullable: false})
     marka!: string;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar', length: 50, nullable: false})
     model!: string;
 
-    @Column()
+    @Column({ type: 'int', nullable: false})
     rok_produkcji!: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2 })
@@ -25,7 +25,7 @@ export class Samochod {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at!: Date;
 
-    @Column({ nullable: true })
+    @Column()
     zdjecie!: string;
 
     @OneToMany(() => Wypozyczenie, wypozyczenie => wypozyczenie.samochod)

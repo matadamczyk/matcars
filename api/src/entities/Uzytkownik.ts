@@ -9,22 +9,22 @@ export class Uzytkownik {
     @PrimaryGeneratedColumn()
     id_uzytkownika!: number;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column()
     imie!: string;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column()
     nazwisko!: string;
 
-    @Column({ unique: true, nullable: true })
+    @Column()
     email!: string;
 
-    @Column({ type: 'varchar', nullable: true })
+    @Column()
     haslo!: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at!: Date;
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', nullable: false })
     last_login!: Date;
 
     @ManyToOne(() => Role, role => role.uzytkownicy)

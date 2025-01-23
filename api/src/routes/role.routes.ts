@@ -1,7 +1,7 @@
 import { getRole, getRoles } from '../controllers/role.controller';
 
 import { Router } from 'express';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken } from '../middleware/auth.middleware';
 
 const router = Router();
 

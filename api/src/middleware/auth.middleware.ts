@@ -29,7 +29,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as JwtPayload;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret-key') as JwtPayload;
         req.user = decoded;
 
         const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);

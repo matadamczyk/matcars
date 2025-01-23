@@ -40,9 +40,15 @@ export const getSamochody = async (req: Request, res: Response): Promise<void> =
 
 export const getSamochod = async (req: Request, res: Response): Promise<void> => {
     try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({ message: "Invalid car ID" });
+            return;
+        }
+
         const samochodRepository = AppDataSource.getRepository(Samochod);
         const samochod = await samochodRepository.findOne({
-            where: { id_samochodu: parseInt(req.params.id) },
+            where: { id_samochodu: id },
             relations: ['wypozyczenia']
         });
 
@@ -60,9 +66,15 @@ export const getSamochod = async (req: Request, res: Response): Promise<void> =>
 
 export const updateSamochod = async (req: Request, res: Response): Promise<void> => {
     try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({ message: "Invalid car ID" });
+            return;
+        }
+
         const samochodRepository = AppDataSource.getRepository(Samochod);
         const samochod = await samochodRepository.findOneBy({ 
-            id_samochodu: parseInt(req.params.id) 
+            id_samochodu: id 
         });
 
         if (!samochod) {
@@ -112,18 +124,41 @@ export const getFilteredSamochody = async (req: Request, res: Response): Promise
 };
 
 export const sortSamochody = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const repo = AppDataSource.getRepository(Samochod);
-        const { sortBy, order } = req.query;
+  try {
+    const repo = AppDataSource.getRepository(Samochod);
+    const { sortBy, order } = req.query;
 
-        const samochody = await repo
-            .createQueryBuilder("samochod")
-            .orderBy(`samochod.${sortBy}`, order === 'desc' ? 'DESC' : 'ASC')
-            .getMany();
+    console.log("Received sortBy:", sortBy, "order:", order);
 
-        res.json(samochody);
-    } catch (error) {
-        console.error("Error sorting cars:", error);
-        res.status(500).json({ message: "Błąd serwera", error });
+    if (!sortBy || !order) {
+      console.error("Missing sortBy or order parameter");
+      res.status(400).json({ message: "Invalid sorting parameters" });
+      return;
     }
+
+    const validSortFields = ["cena_za_dzien", "marka", "model", "rok_produkcji"];
+    const validOrderValues = ["asc", "desc"];
+
+    if (!validSortFields.includes(sortBy as string)) {
+      console.error("Invalid sortBy parameter:", sortBy);
+      res.status(400).json({ message: "Invalid sorting parameters" });
+      return;
+    }
+
+    if (!validOrderValues.includes(order as string)) {
+      console.error("Invalid order parameter:", order);
+      res.status(400).json({ message: "Invalid sorting parameters" });
+      return;
+    }
+
+    const samochody = await repo
+      .createQueryBuilder("samochod")
+      .orderBy(`samochod.${sortBy}`, order === 'desc' ? 'DESC' : 'ASC')
+      .getMany();
+
+    res.json(samochody);
+  } catch (error) {
+    console.error("Error fetching sorted cars:", error); 
+    res.status(500).json({ message: "Błąd serwera", error });
+  }
 };

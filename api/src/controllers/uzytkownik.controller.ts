@@ -41,12 +41,12 @@ export const createUzytkownik = async (req: Request, res: Response): Promise<voi
 
 export const getUzytkownicy = async (req: Request, res: Response): Promise<void> => {
   try {
-      const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
-      const users = await uzytkownikRepository.find();
-      res.json(users);
+    const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
+    const users = await uzytkownikRepository.find({ relations: ['rola'] });
+    res.json(users);
   } catch (error) {
-      console.error("Error fetching users:", error);
-      res.status(500).json({ message: "Błąd serwera" });
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Błąd serwera" });
   }
 };
 
@@ -118,28 +118,28 @@ export const updateLastLogin = async (req: Request, res: Response): Promise<void
 };
 
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-      if (!req.user) {
-          res.status(401).json({ message: "Brak autoryzacji" });
-          return;
-      }
+    try {
+        if (!req.user) {
+            res.status(401).json({ message: "Brak autoryzacji" });
+            return;
+        }
 
-      const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
-      const uzytkownik = await uzytkownikRepository.findOne({
-          where: { id_uzytkownika: req.user.id },
-          relations: ['rola', 'klient']
-      });
+        const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
+        const uzytkownik = await uzytkownikRepository.findOne({
+            where: { id_uzytkownika: req.user.id },
+            relations: ['rola', 'klient']
+        });
 
-      if (!uzytkownik) {
-          res.status(404).json({ message: "Użytkownik nie znaleziony" });
-          return;
-      }
+        if (!uzytkownik) {
+            res.status(404).json({ message: "Użytkownik nie znaleziony" });
+            return;
+        }
 
-      res.json(uzytkownik);
-  } catch (error) {
-      console.error("Error fetching current user:", error);
-      res.status(500).json({ message: "Błąd serwera", error });
-  }
+        res.json(uzytkownik);
+    } catch (error) {
+        console.error("Error fetching current user:", error);
+        res.status(500).json({ message: "Błąd serwera", error });
+    }
 };
 
 export const getUzytkownik = async (req: Request, res: Response): Promise<void> => {
@@ -183,7 +183,6 @@ export const loginUzytkownik = async (req: Request, res: Response): Promise<void
           return;
       }
 
-      // Aktualizacja last_login
       uzytkownik.last_login = new Date();
       await uzytkownikRepository.save(uzytkownik);
 
@@ -193,7 +192,7 @@ export const loginUzytkownik = async (req: Request, res: Response): Promise<void
               email: uzytkownik.email,
               rola: uzytkownik.rola.nazwa 
           },
-          process.env.JWT_SECRET || 'your-secret-key',
+          process.env.JWT_SECRET || 'secret-key',
           { expiresIn: '24h' }
       );
 
@@ -215,8 +214,6 @@ export const loginUzytkownik = async (req: Request, res: Response): Promise<void
 
 export const logoutUzytkownik = async (req: Request, res: Response): Promise<void> => {
   try {
-      // W przypadku JWT, możemy tylko poinformować klienta o sukcesie
-      // Rzeczywiste wylogowanie powinno być obsłużone po stronie klienta
       res.json({ message: "Wylogowano pomyślnie" });
   } catch (error) {
       console.error("Error during logout:", error);
@@ -230,14 +227,12 @@ export const registerUzytkownik = async (req: Request, res: Response): Promise<v
       const uzytkownikRepository = AppDataSource.getRepository(Uzytkownik);
       const roleRepository = AppDataSource.getRepository(Role);
 
-      // Sprawdź czy użytkownik już istnieje
       const existingUser = await uzytkownikRepository.findOne({ where: { email } });
       if (existingUser) {
           res.status(400).json({ message: "Użytkownik z tym emailem już istnieje" });
           return;
       }
 
-      // Pobierz rolę 'klient'
       const klientRole = await roleRepository.findOne({ 
           where: { nazwa: 'klient' }
       });
@@ -281,6 +276,6 @@ export const registerUzytkownik = async (req: Request, res: Response): Promise<v
       });
   } catch (error) {
       console.error("Error during registration:", error);
-      res.status(500).json({ message: "Błąd serwera", error });
+      res.status(500).json({ message: "Błąd serwera", error: (error as Error).message });
   }
 };
