@@ -1,22 +1,38 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+
+import { Klient } from "./Klient";
+import { Role } from "./Role";
+import { Wypozyczenie } from "./Wypozyczenie";
 
 @Entity("uzytkownicy")
 export class Uzytkownik {
     @PrimaryGeneratedColumn()
     id_uzytkownika!: number;
 
-    @Column({ length: 50 })
+    @Column({ type: 'varchar', nullable: true })
     imie!: string;
 
-    @Column({ length: 50 })
+    @Column({ type: 'varchar', nullable: true })
     nazwisko!: string;
 
-    @Column({ length: 100, unique: true })
+    @Column({ unique: true, nullable: true })
     email!: string;
 
-    @Column()
-    haslo!: string; 
+    @Column({ type: 'varchar', nullable: true })
+    haslo!: string;
 
-    @Column({ length: 20, default: "klient" })
-    rola!: string;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    created_at!: Date;
+
+    @Column({ type: 'timestamp', nullable: true })
+    last_login!: Date;
+
+    @ManyToOne(() => Role, role => role.uzytkownicy)
+    rola!: Role;
+
+    @OneToOne(() => Klient, klient => klient.uzytkownik)
+    klient!: Klient;
+
+    @OneToMany(() => Wypozyczenie, wypozyczenie => wypozyczenie.created_by)
+    utworzone_wypozyczenia!: Wypozyczenie[];
 }

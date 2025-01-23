@@ -6,6 +6,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import klientRoutes from "./routes/klient.routes";
+import roleRoutes from "./routes/role.routes";
 import samochodRoutes from "./routes/samochod.routes";
 import uzytkownikRoutes from "./routes/uzytkownik.routes";
 import wypozyczenieRoutes from "./routes/wypozyczenie.routes";
@@ -42,6 +43,7 @@ app.use("/api/klienci", klientRoutes);
 app.use("/api/samochody", samochodRoutes);
 app.use("/api/wypozyczenia", wypozyczenieRoutes);
 app.use("/api/uzytkownicy", uzytkownikRoutes);
+app.use("/api/role", roleRoutes);
 
 AppDataSource.initialize()
   .then(async () => {

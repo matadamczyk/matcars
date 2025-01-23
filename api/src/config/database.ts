@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { Klient } from "../entities/Klient";
+import { Role } from "../entities/Role";
 import { Samochod } from "../entities/Samochod";
 import { Uzytkownik } from "../entities/Uzytkownik";
 import { Wypozyczenie } from "../entities/Wypozyczenie";
@@ -14,10 +15,10 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  schema: process.env.DB_SCHEMA || 'public',
+  schema: process.env.DB_SCHEMA || 'test',
   synchronize: true,
   logging: true,
-  entities: [Klient, Samochod, Uzytkownik, Wypozyczenie],
+  entities: [Klient, Samochod, Uzytkownik, Wypozyczenie, Role],
   migrations: [__dirname, "../migrations/**/*.ts"],
   ssl: {
     rejectUnauthorized: false, 
