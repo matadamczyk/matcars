@@ -1,5 +1,3 @@
-```
-
 # MatCars - Car Rental Application
 
 A modern web application for car rental services, built with Vue.js and Node.js.
@@ -140,4 +138,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Authors
 
 - Mateusz Adamczyk - [GitHub](https://github.com/matadamczyk)
-```
