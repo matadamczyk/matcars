@@ -5,6 +5,7 @@
     "start:api": "cd ./api/src/ && nodemon server.ts",
     "start:web": "cd web && npm run serve",
     "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
+    "install:all": "npm install && cd api && npm install && cd ../web && npm install",
     "typeorm": "cd ./api/ && typeorm-ts-node-commonjs"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
     "typeorm": "^0.3.20",
     "vue": "^3.5.13",
     "vue-class-component": "^8.0.0-0",
+    "vue-i18n": "^10.0.5",
     "vue-router": "^4.0.3"
   }
 }
