@@ -5,51 +5,41 @@
         <img class="logo" src="../../../public/logo.png" alt="logo" />
       </RouterLink>
       <div class="links">
-        <RouterLink to="/" :class="{ link: true, active: activePath === '/' }"
-          >Home</RouterLink
-        >
-        <RouterLink
-          to="/about"
-          :class="{ link: true, active: activePath === '/about' }"
-          >About</RouterLink
-        >
-        <RouterLink
-          to="/offer"
-          :class="{ link: true, active: activePath === '/offer' }"
-          >Vehicle Models</RouterLink
-        >
-        <RouterLink
-          to="/contact"
-          :class="{ link: true, active: activePath === '/contact' }"
-          >Contact</RouterLink
-        >
+        <RouterLink to="/" :class="{ link: true, active: activePath === '/' }">
+          {{ $t('navbar.home') }}
+        </RouterLink>
+        <RouterLink to="/about" :class="{ link: true, active: activePath === '/about' }">
+          {{ $t('navbar.about') }}
+        </RouterLink>
+        <RouterLink to="/offer" :class="{ link: true, active: activePath === '/offer' }">
+          {{ $t('navbar.vehicles') }}
+        </RouterLink>
+        <RouterLink to="/contact" :class="{ link: true, active: activePath === '/contact' }">
+          {{ $t('navbar.contact') }}
+        </RouterLink>
         <RouterLink
           to="/admin"
           :class="{ link: true, active: activePath === '/admin' }"
           v-if="store.isAdmin"
-          >Admin Panel</RouterLink
-        >
+        >{{ $t('navbar.adminPanel') }}</RouterLink>
         <RouterLink
           to="/user"
           :class="{ link: true, active: activePath === '/user' }"
           v-if="store.isLoggedIn && !store.isAdmin"
-          >User Panel</RouterLink
-        >
+        >{{ $t('navbar.userPanel') }}</RouterLink>
       </div>
       <div class="login" v-if="!store.isLoggedIn">
-        <Button class="signin" label="Sign in" @click="signin = true"></Button>
-        <Button
-          class="register"
-          label="Register"
-          @click="register = true"
-        ></Button>
+        <Button class="lang-switch" @click="toggleLanguage">
+          {{ currentLanguage === 'pl' ? 'EN' : 'PL' }}
+        </Button>
+        <Button class="signin" :label="$t('navbar.signin')" @click="signin = true"></Button>
+        <Button class="register" :label="$t('navbar.register')" @click="register = true"></Button>
       </div>
       <div class="logout" v-else>
-        <Button
-          class="register"
-          label="Logout"
-          @click="handleLogout"
-        ></Button>
+        <Button class="lang-switch" @click="toggleLanguage">
+          {{ currentLanguage === 'pl' ? 'EN' : 'PL' }}
+        </Button>
+        <Button class="register" :label="$t('navbar.logout')" @click="handleLogout"></Button>
       </div>
     </div>
     <SignIn :visible="signin" @update:visible="signin = $event" @switchToRegister="openRegister" />
@@ -63,6 +53,15 @@ import { useRoute, useRouter } from "vue-router";
 import { useStore } from "../../store/store";
 import SignIn from "../account/SignIn.vue";
 import Register from "../account/Register.vue";
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
+const currentLanguage = ref(locale.value);
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'pl' ? 'en' : 'pl';
+  currentLanguage.value = locale.value;
+};
 
 const store = useStore();
 

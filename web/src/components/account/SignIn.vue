@@ -8,36 +8,36 @@
       <div class="dialog-content">
         <div class="dialog-header">
           <img src="../../../public/logo.png" alt="logo" />
-          <h2>Welcome Back</h2>
+          <h2>{{ $t('auth.login.title') }}</h2>
           <p>
-            Don't have an account?
-            <a href="#" @click="switchToRegister">Create today!</a>
+            {{ $t('auth.login.noAccount') }}
+            <a href="#" @click="switchToRegister">{{ $t('auth.login.createToday') }}</a>
           </p>
         </div>
         <div class="dialog-body">
-          <label for="email1">Email</label>
+          <label for="email1">{{ $t('auth.email') }}</label>
           <input
             id="email1"
             type="text"
-            placeholder="Email address"
+            :placeholder="$t('auth.email')"
             class="input"
             v-model="email"
           />
 
-          <label for="password1">Password</label>
+          <label for="password1">{{ $t('auth.password') }}</label>
           <input
             id="password1"
             type="password"
-            placeholder="Password"
+            :placeholder="$t('auth.password')"
             class="input"
             v-model="password"
           />
 
           <div class="dialog-footer">
-            <a href="#">Forgot password?</a>
+            <a href="#">{{ $t('auth.login.forgotPassword') }}</a>
           </div>
 
-          <button class="btn btn-primary" @click="handleSignIn">Sign In</button>
+          <button class="btn btn-primary" @click="handleSignIn">{{ $t('auth.login.title') }}</button>
         </div>
       </div>
     </Dialog>
@@ -48,12 +48,10 @@
     >
       <div class="dialog-content">
         <div class="dialog-header">
-          <h2 class="success">Login Successful</h2>
+          <h2 class="success">{{ $t('auth.login.success') }}</h2>
         </div>
         <div class="dialog-body">
-          <button class="btn btn-primary" @click="closeSuccessDialog">
-            OK
-          </button>
+          <button class="btn btn-primary" @click="closeSuccessDialog">OK</button>
         </div>
       </div>
     </Dialog>
@@ -65,6 +63,9 @@ import { ref, watch, defineProps, defineEmits } from "vue";
 import { useStore } from "@/store/store";
 import axios from "axios";
 import Dialog from "primevue/dialog";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   visible: {

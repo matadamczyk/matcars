@@ -1,33 +1,37 @@
 <template>
   <div class="footer-container">
     <div class="pre-footer">
-      <h2>Drive Your Dreams with MatCars - Afford<span class="able">able</span>, Reli<span class="able">able</span>, Unforgett<span class="able">able</span>.</h2>
+      <h2>{{ $t('footer.slogan.part1') }}<span class="able">{{ $t('footer.slogan.able1') }}</span>, 
+          {{ $t('footer.slogan.part2') }}<span class="able">{{ $t('footer.slogan.able2') }}</span>, 
+          {{ $t('footer.slogan.part3') }}<span class="able">{{ $t('footer.slogan.able3') }}</span>.</h2>
     </div>
     <div class="footer-content">
       <div class="footer-section">
         <h3>MATCARS</h3>
-        <p>&copy; 2024 Car Rental Company.<br />All rights reserved.</p>
+        <p>{{ $t('footer.rights') }}</p>
       </div>
       <div class="footer-section">
-        <h3>Working Hours</h3>
-        <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
-        <p>Sat: 10:00 AM - 4:00 PM</p>
-        <p>Sun: Closed</p>
+        <h3>{{ $t('footer.workingHours.title') }}</h3>
+        <p>{{ $t('footer.workingHours.weekdays') }}</p>
+        <p>{{ $t('footer.workingHours.saturday') }}</p>
+        <p>{{ $t('footer.workingHours.sunday') }}</p>
       </div>
       <div class="footer-section">
-        <h3>Contact Us</h3>
-        <p>Email: info@matcars.com</p>
-        <p>Phone: (123) 456-7890</p>
+        <h3>{{ $t('footer.contact.title') }}</h3>
+        <p>{{ $t('footer.contact.email') }}</p>
+        <p>{{ $t('footer.contact.phone') }}</p>
       </div>
       <div class="footer-section">
-        <h3>Designed by</h3>
+        <h3>{{ $t('footer.designedBy') }}</h3>
         <a href="https://github.com/matadamczyk"><i class="pi pi-github"></i> matadamczyk</a>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style scoped>

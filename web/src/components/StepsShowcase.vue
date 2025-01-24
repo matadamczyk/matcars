@@ -1,32 +1,33 @@
 <template>
   <div class="steps-container">
     <div class="title">
-      <h3>Plan your <span>trip</span> right now!</h3>
-      <h1>Check out <span>steps</span> of renting</h1>
+      <h3>{{ $t('steps.planTrip') }} <span>{{ $t('steps.trip') }}</span> {{ $t('steps.rightNow') }}</h3>
+      <h1>{{ $t('steps.checkOut') }} <span>{{ $t('steps.stepsOf') }}</span> {{ $t('steps.renting') }}</h1>
     </div>
     <div class="steps">
       <div class="step">
         <i class="pi pi-search"></i>
-        <h2>Select Car</h2>
+        <h2>{{ $t('steps.step1') }}</h2>
       </div>
       <i class="pi pi-angle-right first"></i>
       <i class="pi pi-angle-right second"></i>
       <div class="step">
         <i class="pi pi-book"></i>
-        <h2>Book</h2>
+        <h2>{{ $t('steps.step2') }}</h2>
       </div>
       <i class="pi pi-angle-right first"></i>
       <i class="pi pi-angle-right second"></i>
       <div class="step">
         <i class="pi pi-car"></i>
-        <h2>Drive car of your dreams</h2>
+        <h2>{{ $t('steps.step3') }}</h2>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style scoped>

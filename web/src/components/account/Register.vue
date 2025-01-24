@@ -4,84 +4,69 @@
       <div class="dialog-content">
         <div class="dialog-header">
           <img src="../../../public/logo.png" alt="logo">
-          <h2>Create Account</h2>
-          <p>Have an account? <a href="#" @click="switchToSignIn">Sign in now!</a></p>
+          <h2>{{ $t('auth.register.title') }}</h2>
+          <p>{{ $t('auth.register.haveAccount') }} <a href="#" @click="switchToSignIn">{{ $t('auth.register.signInNow') }}</a></p>
         </div>
         <div class="dialog-body">
-          <label for="firstName">First Name</label>
+          <label for="firstName">{{ $t('auth.register.firstName') }}</label>
           <input
             id="firstName"
             type="text"
-            placeholder="First Name"
+            :placeholder="$t('auth.register.firstName')"
             class="input"
             v-model="firstName"
           />
 
-          <label for="lastName">Last Name</label>
+          <label for="lastName">{{ $t('auth.register.lastName') }}</label>
           <input
             id="lastName"
             type="text"
-            placeholder="Last Name"
+            :placeholder="$t('auth.register.lastName')"
             class="input"
             v-model="lastName"
           />
-          <label for="email1">Email</label>
+
+          <label for="email1">{{ $t('auth.email') }}</label>
           <input
             id="email1"
             type="text"
-            placeholder="Email address"
+            :placeholder="$t('auth.email')"
             class="input"
             v-model="email"
           />
 
-          <label for="password1">Password</label>
+          <label for="password1">{{ $t('auth.password') }}</label>
           <input
             id="password1"
             type="password"
-            placeholder="Password"
+            :placeholder="$t('auth.password')"
             class="input"
             v-model="password"
           />
 
-          <label for="password2">Confirm password</label>
+          <label for="password2">{{ $t('auth.confirmPassword') }}</label>
           <input
             id="password2"
             type="password"
-            placeholder="Password"
+            :placeholder="$t('auth.confirmPassword')"
             class="input"
             v-model="confirmPassword"
           />
 
           <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-          <button class="btn btn-primary" @click="handleRegister">Register</button>
+          <button class="btn btn-primary" @click="handleRegister">{{ $t('auth.register.title') }}</button>
         </div>
       </div>
     </Dialog>
     <Dialog v-model:visible="successVisible" modal :style="{ width: '25rem', position: 'absolute' }">
       <div class="dialog-content">
         <div class="dialog-header">
-          <h2>Registration Successful</h2>
+          <h2 class="success">{{ $t('auth.register.success') }}</h2>
+          <p>{{ $t('auth.register.successMessage') }}</p>
         </div>
         <div class="dialog-body">
-          <p>Your account has been created successfully.</p>
           <button class="btn btn-primary" @click="closeSuccessDialog">OK</button>
-        </div>
-      </div>
-    </Dialog>
-    <Dialog
-      v-model:visible="successVisible"
-      modal
-      :style="{ width: '25rem', position: 'absolute' }"
-    >
-      <div class="dialog-content">
-        <div class="dialog-header">
-          <h2 class="success">Login Successful</h2>
-        </div>
-        <div class="dialog-body">
-          <button class="btn btn-primary" @click="closeSuccessDialog">
-            OK
-          </button>
         </div>
       </div>
     </Dialog>
@@ -92,6 +77,9 @@
 import { ref, watch, defineProps, defineEmits } from "vue";
 import axios from "axios";
 import Dialog from "primevue/dialog";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   visible: {

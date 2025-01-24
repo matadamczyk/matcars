@@ -1,12 +1,12 @@
 <template>
   <div class="rent-container">
     <div class="rent-panel">
-      <h2>Book a <span style="color: var(--orange)">Car</span></h2>
+      <h2>{{ $t('rent.title') }} <span style="color: var(--orange)">{{ $t('rent.secondTitle') }}</span></h2>
       <form @submit.prevent="confirmBooking">
         <div class="form-data">
           <div class="form-row">
             <div class="form-column">
-              <label for="carModel">Select Your Car Model</label>
+              <label for="carModel">{{ $t('rent.selectCar') }}</label>
               <select id="carModel" v-model="selectedCarModel">
                 <option
                   v-for="car in availableCars"
@@ -18,21 +18,21 @@
               </select>
             </div>
             <div class="form-column">
-              <label for="pickupDate">Select Pick-up Date</label>
+              <label for="pickupDate">{{ $t('rent.pickupDate') }}</label>
               <input type="date" id="pickupDate" v-model="pickupDate" />
             </div>
             <div class="form-column">
-              <label for="dropoffDate">Select Drop-off Date</label>
+              <label for="dropoffDate">{{ $t('rent.dropoffDate') }}</label>
               <input type="date" id="dropoffDate" v-model="dropoffDate" />
             </div>
           </div>
           <div class="form-column phone">
-            <label for="telefon">Phone Number</label>
+            <label for="telefon">{{ $t('rent.phone') }}</label>
             <input type="text" id="telefon" v-model="client.telefon" required />
           </div>
         </div>
         <div class="form-buttons">
-          <Button class="submit" label="Submit" @click="confirmBooking" />
+          <Button class="submit" :label="$t('rent.submit')" @click="confirmBooking" />
         </div>
       </form>
     </div>
@@ -42,11 +42,11 @@
       :style="{ width: '25rem', position: 'absolute' }"
     >
       <div class="dialog-content">
-        <h2>Confirm Booking</h2>
-        <p>Are you sure you want to book this car?</p>
+        <h2>{{ $t('rent.confirm.title') }}</h2>
+        <p>{{ $t('rent.confirm.message') }}</p>
         <div class="dialog-footer">
-          <button class="btn btn-primary" @click="submitForm">Yes</button>
-          <button class="btn" @click="dialogVisible = false">No</button>
+          <button class="btn btn-primary" @click="submitForm">{{ $t('rent.confirm.yes') }}</button>
+          <button class="btn" @click="dialogVisible = false">{{ $t('rent.confirm.no') }}</button>
         </div>
       </div>
     </Dialog>
@@ -57,7 +57,6 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { Car } from "@/interfaces/Car.interface";
-import { Rent } from "@/interfaces/Rent.interface";
 import { Customer } from "@/interfaces/Customer.interface";
 import { useStore } from "@/store/store";
 import Dialog from "primevue/dialog";

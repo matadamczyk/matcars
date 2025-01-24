@@ -4,14 +4,15 @@
       class="textarea"
       :class="{ 'animate-left': animate, scrolling: isScrolling }"
     >
-      <h2>Rent the car of your dreams today!</h2>
+      <h2>{{ $t('welcome.title') }}</h2>
       <h1>
-        <span class="orange">Unbeatable</span> prices,<br />
-        <span class="orange">unlimited</span> miles,<br />
-        and <span class="orange">flexible</span> pick-up options await you.
+        <span class="orange">{{ $t('welcome.subtitle.part1') }}</span> {{ $t('welcome.subtitle.part2') }}<br />
+        <span class="orange">{{ $t('welcome.subtitle.part3') }}</span> {{ $t('welcome.subtitle.part4') }}<br />
+        {{ $t('welcome.subtitle.part5') }} <span class="orange">{{ $t('welcome.subtitle.part6') }}</span> 
+        {{ $t('welcome.subtitle.part7') }}
       </h1>
-      <Button @click="moveToRent" class="booking" label="Book now" />
-      <Button @click="moveToOffer" class="offer" label="View offer" />
+      <Button @click="moveToRent" class="booking" :label="$t('welcome.bookNow')" />
+      <Button @click="moveToOffer" class="offer" :label="$t('welcome.viewOffer')" />
     </div>
     <div
       class="image-container"
@@ -25,6 +26,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const animate = ref(false);
 const isScrolling = ref(false);

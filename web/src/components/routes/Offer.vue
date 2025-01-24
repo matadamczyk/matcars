@@ -4,30 +4,30 @@
       <input
         v-model="searchQuery"
         @input="filterCars"
-        placeholder="Search for a car model..."
+        :placeholder="$t('offer.search.placeholder')"
       />
       <div class="filter-panel">
         <i class="pi pi-filter"></i>
         <select v-model="sortOption">
-          <option value="">Sort by</option>
-          <option value="cena_za_dzien_asc">Price (Low to High)</option>
-          <option value="cena_za_dzien_desc">Price (High to Low)</option>
-          <option value="marka_asc">Brand (A to Z)</option>
-          <option value="marka_desc">Brand (Z to A)</option>
-          <option value="rok_produkcji_asc">Year (Oldest to Newest)</option>
-          <option value="rok_produkcji_desc">Year (Newest to Oldest)</option>
+          <option value="">{{ $t('offer.sort.default') }}</option>
+          <option value="cena_za_dzien_asc">{{ $t('offer.sort.priceLowToHigh') }}</option>
+          <option value="cena_za_dzien_desc">{{ $t('offer.sort.priceHighToLow') }}</option>
+          <option value="marka_asc">{{ $t('offer.sort.brandAZ') }}</option>
+          <option value="marka_desc">{{ $t('offer.sort.brandZA') }}</option>
+          <option value="rok_produkcji_asc">{{ $t('offer.sort.yearOldToNew') }}</option>
+          <option value="rok_produkcji_desc">{{ $t('offer.sort.yearNewToOld') }}</option>
         </select>
       </div>
       <button class="add-car" v-if="isAdmin" @click="openDialog">
-        Add Car
+        {{ $t('offer.actions.add') }}
       </button>
     </div>
-    <div v-if="loading" class="loader">Loading our fleet...</div>
+    <div v-if="loading" class="loader">{{ $t('offer.loading') }}</div>
     <ul v-else class="car-list">
       <li v-for="car in filteredCars" :key="car.id_samochodu" class="car-item">
         <img
           :src="car.zdjecie"
-          alt="Car Image"
+          :alt="`${car.marka} ${car.model}`"
           class="car-image"
           v-if="car.zdjecie"
         />
@@ -37,14 +37,14 @@
           <p>{{ car.cena_za_dzien + "$" }}</p>
           <div class="car-actions">
             <button class="edit-remove" v-if="isAdmin" @click="editCar(car)">
-              Edit
+              {{ $t('offer.actions.edit') }}
             </button>
             <button
               class="edit-remove"
               v-if="isAdmin"
               @click="removeCar(car.id_samochodu)"
             >
-              Remove
+              {{ $t('offer.actions.remove') }}
             </button>
           </div>
         </div>
@@ -58,21 +58,23 @@
       <div class="dialog-content">
         <form @submit.prevent="saveCar">
           <div class="dialog-header">
-            <h2 style="color: var(--white);">{{ isEditing ? "Update Car" : "Add Car" }}</h2>
+            <h2 style="color: var(--white);">
+              {{ isEditing ? $t('offer.dialog.edit') : $t('offer.dialog.add') }}
+            </h2>
           </div>
           <div class="dialog-body">
-            <label for="marka">Brand:</label>
+            <label for="marka">{{ $t('offer.form.brand') }}</label>
             <input id="marka" v-model="newCar.marka" required />
-            <label for="model">Model:</label>
+            <label for="model">{{ $t('offer.form.model') }}</label>
             <input id="model" v-model="newCar.model" required />
-            <label for="rok_produkcji">Year:</label>
+            <label for="rok_produkcji">{{ $t('offer.form.year') }}</label>
             <input
               id="rok_produkcji"
               v-model="newCar.rok_produkcji"
               type="number"
               required
             />
-            <label for="cena_za_dzien">Price per day:</label>
+            <label for="cena_za_dzien">{{ $t('offer.form.price') }}</label>
             <input
               id="cena_za_dzien"
               v-model="newCar.cena_za_dzien"
@@ -80,15 +82,15 @@
               step="0.01"
               required
             />
-            <label for="zdjecie">Image URL:</label>
+            <label for="zdjecie">{{ $t('offer.form.image') }}</label>
             <input id="zdjecie" v-model="newCar.zdjecie" />
           </div>
           <div class="dialog-footer">
             <button type="submit" class="add">
-              {{ isEditing ? "Update" : "Add" }}
+              {{ isEditing ? $t('offer.actions.update') : $t('offer.actions.add') }}
             </button>
             <button type="button" class="cancel" @click="closeDialog">
-              Cancel
+              {{ $t('offer.actions.cancel') }}
             </button>
           </div>
         </form>
@@ -103,9 +105,11 @@ import axios from "axios";
 import { useStore } from "../../store/store";
 import { Car } from "../../interfaces/Car.interface";
 import Dialog from "primevue/dialog";
+import { useI18n } from 'vue-i18n';
 
 const store = useStore();
 const isAdmin = store.isAdmin;
+const { t } = useI18n();
 
 const cars = ref<Car[]>([]);
 const filteredCars = ref<Car[]>([]);

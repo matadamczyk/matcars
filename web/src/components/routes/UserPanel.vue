@@ -1,15 +1,15 @@
 <template>
   <div class="user-panel">
     <div class="rentals-container" v-if="rentals.length">
-      <h2>My <span style="color: var(--orange)">Rentals</span></h2>
+      <h2>{{ $t('user.title') }}</h2>
       <table>
         <thead>
           <tr>
-            <th>Car</th>
-            <th>Pick-up Date</th>
-            <th>Drop-off Date</th>
-            <th>Total Cost</th>
-            <th>Actions</th>
+            <th>{{ $t('user.table.car') }}</th>
+            <th>{{ $t('user.table.pickupDate') }}</th>
+            <th>{{ $t('user.table.dropoffDate') }}</th>
+            <th>{{ $t('user.table.totalCost') }}</th>
+            <th>{{ $t('user.table.actions') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -20,7 +20,7 @@
             <td>{{ rental.calkowity_koszt }} PLN</td>
             <td>
               <button class="delete-btn" @click="deleteRental(rental.id_wypozyczenia)">
-                Cancel
+                {{ $t('user.table.cancel') }}
               </button>
             </td>
           </tr>
@@ -28,7 +28,7 @@
       </table>
     </div>
     <div v-else class="no-rentals">
-      You have no active rentals
+      {{ $t('user.noRentals') }}
     </div>
   </div>
 </template>
