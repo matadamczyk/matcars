@@ -341,8 +341,8 @@ const sections = ref<Array<{
   },
   {
     title: 'Samochody',
-    headers: ['ID', 'Marka', 'Model', 'Rok produkcji', 'Cena za dzień', 'Status', 'Utworzono'],
-    keys: ['id_samochodu', 'marka', 'model', 'rok_produkcji', 'cena_za_dzien', 'status', 'created_at'],
+    headers: ['ID', 'Marka', 'Model', 'Rok produkcji', 'Cena za dzień', 'Utworzono'],
+    keys: ['id_samochodu', 'marka', 'model', 'rok_produkcji', 'cena_za_dzien', 'created_at'],
     data: cars.value,
     isOpen: false,
     error: ''
@@ -366,7 +366,7 @@ const sections = ref<Array<{
   {
     title: 'Aktywne Wypożyczenia',
     headers: ['ID', 'Klient', 'Nr telefonu', 'Samochód', 'Data wypożyczenia', 'Data zwrotu', 'Koszt całkowity'],
-    keys: ['id_wypozyczenia', 'klient.imie', 'klient.telefon', 'samochod.marka', 'samochod.model', 'data_wypozyczenia', 'data_zwrotu', 'calkowity_koszt'],
+    keys: ['id_wypozyczenia', 'klient', 'telefon', 'samochod', 'data_wypozyczenia', 'data_zwrotu', 'calkowity_koszt'],
     data: activeRentals.value,
     isOpen: false,
     error: ''
