@@ -40,12 +40,8 @@ const messages = {
     },
     about: {
       title: 'About Us',
-      description: [
-        'We offer a wide range of car models for rent. Currently, we have over 10 different models available.',
-        'Our mission is to provide high-quality car rental services to our customers. We strive to offer the best prices and the most convenient rental experience.',
-        'We are committed to customer satisfaction and work hard to ensure that every rental experience is a positive one.',
-        'Thank you for choosing our car rental service. We look forward to serving you!'
-      ],
+      description:
+        'We offer a wide range of car models for rent. Currently, we have over 10 different models available. Our mission is to provide high-quality car rental services to our customers. We strive to offer the best prices and the most convenient rental experience. We are committed to customer satisfaction and work hard to ensure that every rental experience is a positive one. Thank you for choosing our car rental service. We look forward to serving you!',
       visit: 'Visit us at our Cracow office:'
     },
     rent: {
@@ -237,12 +233,8 @@ const messages = {
     },
     about: {
       title: 'O nas',
-      description: [
-        'Oferujemy szeroki wybór modeli samochodów do wynajęcia. Obecnie mamy ponad 10 różnych modeli.',
-        'Naszą misją jest świadczenie wysokiej jakości usług wynajmu samochodów. Staramy się oferować najlepsze ceny i najwygodniejsze doświadczenie wynajmu.',
-        'Jesteśmy zaangażowani w zadowolenie klienta i dokładamy wszelkich starań, aby każde wypożyczenie było pozytywnym doświadczeniem.',
-        'Dziękujemy za wybór naszej wypożyczalni. Czekamy na Ciebie!'
-      ],
+      description:
+        'Oferujemy szeroki wybór modeli samochodów do wynajęcia. Obecnie mamy ponad 10 różnych modeli. Naszą misją jest świadczenie wysokiej jakości usług wynajmu samochodów. Staramy się oferować najlepsze ceny i najwygodniejsze doświadczenie wynajmu. Jesteśmy zaangażowani w zadowolenie klienta i dokładamy wszelkich starań, aby każde wypożyczenie było pozytywnym doświadczeniem. Dziękujemy za wybór naszej wypożyczalni. Czekamy na Ciebie!',
       visit: 'Odwiedź nas w naszym biurze w Krakowie:'
     },
     rent: {
