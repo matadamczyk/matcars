@@ -1,0 +1,1077 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\lstset{
+    breaklines=true,
+    breakatwhitespace=true,
+    basicstyle=\ttfamily\small,
+    columns=flexible,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    xleftmargin=2em,
+    xrightmargin=2em,
+    backgroundcolor=\color{white},
+    rulecolor=\color{black},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbersep=5pt,
+    belowskip=1em,
+    aboveskip=1em
+}
+
+\title{Dokumentacja Projektu - System Wypożyczalni Samochodów}
+\author{Mateusz Adamczyk}
+\date{23 stycznia 2025r.}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Projekt koncepcji, założenia}
+
+\subsection{Temat projektu}
+Projekt dotyczy systemu zarządzania wypożyczalnią samochodów. System ma na celu usprawnienie procesu wypożyczania pojazdów, zarządzania flotą samochodową oraz obsługi klientów. Głównym celem jest stworzenie kompleksowego rozwiązania, które pozwoli na efektywne zarządzanie wszystkimi aspektami działalności wypożyczalni samochodów.
+
+\subsection{Analiza wymagań użytkownika}
+System powinien realizować następujące funkcjonalności:
+
+\begin{itemize}
+    \item Zarządzanie użytkownikami z różnymi poziomami dostępu (admin, klient)
+    \item Rejestracja i logowanie użytkowników
+    \item Zarządzanie flotą samochodów (dodawanie, edycja, usuwanie)
+    \item Rezerwacja i wypożyczanie samochodów
+    \item Monitorowanie statusu wypożyczeń
+    \item Generowanie raportów i statystyk
+    \item Audytowanie operacji w systemie
+\end{itemize}
+
+\subsection{Zaprojektowane funkcje}
+System realizuje następujące podstawowe funkcje:
+
+\begin{enumerate}
+    \item Funkcje autoryzacji i autentykacji:
+    \begin{itemize}
+        \item Rejestracja nowych użytkowników
+        \item Logowanie do systemu
+        \item Zarządzanie rolami użytkowników
+    \end{itemize}
+    
+    \item Funkcje zarządzania samochodami:
+    \begin{itemize}
+        \item Dodawanie nowych samochodów do floty
+        \item Aktualizacja informacji o samochodach
+        \item Sprawdzanie dostępności samochodów
+    \end{itemize}
+    
+    \item Funkcje wypożyczeń:
+    \begin{itemize}
+        \item Tworzenie nowych wypożyczeń
+        \item Obliczanie kosztu wypożyczenia
+        \item Walidacja dat wypożyczenia
+    \end{itemize}
+    
+    \item Funkcje raportowania:
+    \begin{itemize}
+        \item Generowanie statystyk wypożyczeń
+        \item Monitorowanie aktywnych wypożyczeń
+        \item Śledzenie historii operacji
+    \end{itemize}
+\end{enumerate}
+
+\section{Projekt diagramów}
+
+\subsection{Diagram przepływu danych (DFD)}
+
+\paragraph{Główne procesy w systemie:}
+\begin{enumerate}
+    \item \textbf{Proces autoryzacji}
+    \begin{itemize}
+        \item Wejście: dane logowania użytkownika
+        \item Wyjście: token JWT, informacje o użytkowniku
+        \item Magazyn danych: tabela uzytkownicy, role
+    \end{itemize}
+
+    \item \textbf{Zarządzanie flotą}
+    \begin{itemize}
+        \item Wejście: dane samochodów, aktualizacje statusu
+        \item Wyjście: informacje o dostępności, statystyki
+        \item Magazyn danych: tabela samochody, widok car\_availability
+    \end{itemize}
+
+    \item \textbf{Obsługa wypożyczeń}
+    \begin{itemize}
+        \item Wejście: dane wypożyczenia, dane klienta
+        \item Wyjście: potwierdzenie rezerwacji, faktury
+        \item Magazyn danych: tabela wypozyczenia, widok active\_rentals
+    \end{itemize}
+
+    \item \textbf{Raportowanie}
+    \begin{itemize}
+        \item Wejście: parametry raportów, zakres dat
+        \item Wyjście: statystyki, raporty finansowe
+        \item Magazyn danych: widok rental\_statistics, audit\_logs
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Przepływ danych między procesami:}
+\begin{itemize}
+    \item \textbf{Autoryzacja → Pozostałe procesy}
+    \begin{itemize}
+        \item Token JWT
+        \item Uprawnienia użytkownika
+    \end{itemize}
+
+    \item \textbf{Zarządzanie flotą → Obsługa wypożyczeń}
+    \begin{itemize}
+        \item Status dostępności samochodów
+        \item Informacje o pojazdach
+    \end{itemize}
+
+    \item \textbf{Obsługa wypożyczeń → Raportowanie}
+    \begin{itemize}
+        \item Dane o transakcjach
+        \item Statystyki wykorzystania
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Zewnętrzne encje:}
+\begin{itemize}
+    \item \textbf{Klient}
+    \begin{itemize}
+        \item Wysyła: dane osobowe, żądania wypożyczenia
+        \item Otrzymuje: potwierdzenia, faktury
+    \end{itemize}
+
+    \item \textbf{Administrator}
+    \begin{itemize}
+        \item Wysyła: dane konfiguracyjne, zarządzanie użytkownikami
+        \item Otrzymuje: raporty systemowe, logi
+    \end{itemize}
+
+    \item \textbf{Pracownik}
+    \begin{itemize}
+        \item Wysyła: aktualizacje statusów, dane wypożyczeń
+        \item Otrzymuje: raporty operacyjne, statystyki
+    \end{itemize}
+\end{itemize}
+
+\subsection{Encje i atrybuty}
+System składa się z następujących głównych encji:
+
+\begin{enumerate}
+    \item Role
+    \begin{itemize}
+        \item id\_roli (PK)
+        \item nazwa
+    \end{itemize}
+
+    \item Użytkownicy (Uzytkownicy)
+    \begin{itemize}
+        \item id\_uzytkownika (PK)
+        \item imie
+        \item nazwisko
+        \item email
+        \item haslo
+        \item id\_roli (FK)
+        \item created\_at
+        \item last\_login
+    \end{itemize}
+
+    \item Klienci
+    \begin{itemize}
+        \item id\_klienta (PK)
+        \item id\_uzytkownika (FK)
+        \item imie
+        \item nazwisko
+        \item email
+        \item telefon
+        \item created\_at
+    \end{itemize}
+
+    \item Samochody
+    \begin{itemize}
+        \item id\_samochodu (PK)
+        \item marka
+        \item model
+        \item rok\_produkcji
+        \item cena\_za\_dzien
+        \item status
+        \item zdjecie
+        \item created\_at
+    \end{itemize}
+
+    \item Wypożyczenia
+    \begin{itemize}
+        \item id\_wypozyczenia (PK)
+        \item id\_klienta (FK)
+        \item id\_samochodu (FK)
+        \item data\_wypozyczenia
+        \item data\_zwrotu
+        \item calkowity\_koszt
+        \item status
+        \item created\_at
+        \item created\_by (FK)
+    \end{itemize}
+
+    \item Audit\_logs
+    \begin{itemize}
+        \item id\_log (PK)
+        \item tabela
+        \item operacja
+        \item data\_operacji
+        \item uzytkownik\_id (FK)
+        \item stare\_dane
+        \item nowe\_dane
+    \end{itemize}
+\end{enumerate}
+\subsection{Diagram ERD}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{erd.png}
+    \caption{Diagram ERD systemu wypożyczalni samochodów}
+    \label{fig:erd}
+\end{figure}
+
+\paragraph{Opis diagramu ERD:}
+Diagram przedstawia relacje między następującymi encjami:
+\begin{itemize}
+    \item \textbf{Role} - przechowuje typy uprawnień użytkowników (admin, pracownik, klient)
+    \item \textbf{Uzytkownicy} - powiązani z rolami (relacja 1:N), zawiera podstawowe informacje o użytkownikach
+    \item \textbf{Klienci} - rozszerzenie informacji o użytkownikach typu klient (relacja 1:1 z Uzytkownicy)
+    \item \textbf{Samochody} - informacje o dostępnych pojazdach
+    \item \textbf{Wypozyczenia} - łączy klientów z samochodami (relacje N:1), zawiera informacje o wypożyczeniu
+    \item \textbf{Audit\_logs} - przechowuje historię operacji w systemie
+\end{itemize}
+
+\paragraph{Widoki w systemie:}
+System zawiera trzy kluczowe widoki, które agregują i prezentują dane w użyteczny sposób:
+
+\begin{enumerate}
+    \item \textbf{Rental\_statistics} - statystyki wypożyczeń:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok statystyk wypożyczeń}
+    ]
+    -- Widok statystyk wypożyczeń
+    CREATE VIEW rental_statistics AS
+    SELECT
+        s.marka,
+        s.model,
+        COUNT(w.id_wypozyczenia) as total_rentals,
+        SUM(w.calkowity_koszt) as total_revenue,
+        AVG(w.calkowity_koszt) as avg_revenue
+    FROM samochody s
+    LEFT JOIN wypozyczenia w ON s.id_samochodu = w.id_samochodu
+    GROUP BY s.id_samochodu, s.marka, s.model
+    HAVING AVG(w.calkowity_koszt) > 200;
+
+    \end{lstlisting}
+    \newpage
+    \item \textbf{Car\_availability} - dostępność samochodów:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok dostępności samochodów}
+    ]
+CREATE VIEW car_availability AS
+SELECT
+    s.id_samochodu,
+    s.marka,
+    s.model,
+    s.rok_produkcji,
+    s.cena_za_dzien,
+    s.status,
+    CASE
+        WHEN w.id_wypozyczenia IS NULL THEN true
+        ELSE false
+    END as is_available
+FROM samochody s
+LEFT JOIN wypozyczenia w 
+    ON s.id_samochodu = w.id_samochodu
+    AND w.status = 'aktywne'
+    AND CURRENT_DATE BETWEEN w.data_wypozyczenia AND w.data_zwrotu;
+    \end{lstlisting}
+
+    \item \textbf{Active\_rentals} - aktywne wypożyczenia:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok aktywnych wypożyczeń}
+    ]
+CREATE VIEW active_rentals AS
+SELECT
+    w.id_wypozyczenia,
+    k.imie || ' ' || k.nazwisko AS klient,
+    k.telefon,
+    s.marka || ' ' || s.model AS samochod,
+    w.data_wypozyczenia,
+    w.data_zwrotu,
+    w.calkowity_koszt
+FROM wypozyczenia w
+JOIN klienci k ON w.id_klienta = k.id_klienta
+JOIN samochody s ON w.id_samochodu = s.id_samochodu
+WHERE w.status = 'aktywne';
+    \end{lstlisting}
+\end{enumerate}
+
+Główne relacje w systemie:
+\begin{itemize}
+    \item Użytkownik może mieć tylko jedną rolę
+    \item Klient jest powiązany z jednym użytkownikiem
+    \item Wypożyczenie dotyczy jednego samochodu i jednego klienta
+    \item System śledzi wszystkie operacje w audit\_logs
+    \item Widoki bazują na danych z tabel podstawowych i są aktualizowane automatycznie
+\end{itemize}
+
+\section{Projekt logiczny}
+
+\subsection{Struktura bazy danych}
+Baza danych została zaimplementowana w PostgreSQL. Główne tabele zostały zdefiniowane następująco:
+\begin{enumerate}
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    linewidth=\textwidth,
+    caption={Definicja tabeli Klienci}
+]
+CREATE TABLE klienci (
+    id_klienta SERIAL PRIMARY KEY,
+    imie VARCHAR(50) NOT NULL,
+    nazwisko VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    telefon VARCHAR(15),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_uzytkownika INTEGER REFERENCES uzytkownicy(id_uzytkownika)
+);
+\end{lstlisting}
+\newpage
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    linewidth=\textwidth,
+    caption={Definicja tabeli Samochody}
+]
+CREATE TABLE samochody (
+    id_samochodu SERIAL PRIMARY KEY,
+    marka VARCHAR(50) NOT NULL,
+    model VARCHAR(50) NOT NULL,
+    rok_produkcji INT NOT NULL,
+    cena_za_dzien DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'dostepny',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    zdjecie VARCHAR(255),
+    CONSTRAINT check_rok_produkcji 
+        CHECK (rok_produkcji >= 1900 AND rok_produkcji <= EXTRACT(YEAR FROM CURRENT_DATE)),
+    CONSTRAINT check_cena CHECK (cena_za_dzien > 0)
+);
+\end{lstlisting}
+
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    linewidth=\textwidth,
+    caption={Definicja tabeli Wypozyczenia}
+]
+CREATE TABLE wypozyczenia (
+    id_wypozyczenia SERIAL PRIMARY KEY,
+    id_klienta INT NOT NULL,
+    id_samochodu INT NOT NULL,
+    data_wypozyczenia DATE NOT NULL,
+    data_zwrotu DATE NOT NULL,
+    calkowity_koszt DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'aktywne',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INTEGER REFERENCES uzytkownicy(id_uzytkownika),
+    CONSTRAINT check_daty CHECK (data_zwrotu >= data_wypozyczenia),
+    CONSTRAINT check_koszt CHECK (calkowity_koszt >= 0),
+    FOREIGN KEY (id_klienta) REFERENCES klienci(id_klienta),
+    FOREIGN KEY (id_samochodu) REFERENCES samochody(id_samochodu)
+);
+\end{lstlisting}
+\newpage
+\begin{lstlisting}[language=SQL]
+-- Tabela Role
+CREATE TABLE role (
+    id_roli SERIAL PRIMARY KEY,
+    nazwa VARCHAR(50) NOT NULL
+);
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL]
+-- Wstawienie początkowych ról
+INSERT INTO role (nazwa) VALUES
+    ('admin'),
+    ('pracownik'),
+    ('klient');
+\end{lstlisting}
+
+\begin{lstlisting}[language=SQL]
+-- Tabela Uzytkownicy
+CREATE TABLE uzytkownicy (
+    id_uzytkownika SERIAL PRIMARY KEY,
+    imie VARCHAR(50) NOT NULL,
+    nazwisko VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    haslo VARCHAR(255) NOT NULL,
+    id_roli INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP,
+    CONSTRAINT fk_user_role FOREIGN KEY (id_roli) REFERENCES role(id_roli)
+);
+\end{lstlisting}
+\end{enumerate}
+\subsection{Słownik danych}
+\begin{itemize}
+    \item id\_* - Identyfikatory typu SERIAL
+    \item imie, nazwisko - VARCHAR(50)
+    \item email - VARCHAR(100) z ograniczeniem UNIQUE
+    \item haslo - VARCHAR(255) (przechowywane jako hash)
+    \item data\_* - typ DATE
+    \item created\_at - TIMESTAMP
+    \item status - VARCHAR(20)
+    \item cena\_za\_dzien - DECIMAL(10,2)
+\end{itemize}
+
+\section{Analiza zależności funkcyjnych i normalizacja}
+
+\subsection{Zależności funkcyjne}
+W systemie zidentyfikowano następujące główne zależności funkcyjne:
+
+\begin{enumerate}
+    \item Tabela Uzytkownicy:
+    \begin{itemize}
+        \item id\_uzytkownika → \{imie, nazwisko, email, haslo, id\_roli\}
+        \item email → \{id\_uzytkownika\} (ze względu na unikalność adresu email)
+    \end{itemize}
+
+    \item Tabela Samochody:
+    \begin{itemize}
+        \item id\_samochodu → \{marka, model, rok\_produkcji, cena\_za\_dzien, status\}
+    \end{itemize}
+
+    \item Tabela Wypozyczenia:
+    \begin{itemize}
+        \item id\_wypozyczenia → \{id\_klienta, id\_samochodu, data\_wypozyczenia, data\_zwrotu, calkowity\_koszt, status\}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Normalizacja}
+System został zaprojektowany z uwzględnieniem zasad normalizacji do postaci BCNF:
+
+\subsubsection{Pierwsza postać normalna (1NF)}
+Wszystkie tabele spełniają 1NF, ponieważ:
+\begin{itemize}
+    \item Każda kolumna zawiera wartości atomowe
+    \item Nie występują grupy powtarzających się kolumn
+    \item Każda tabela posiada klucz główny
+\end{itemize}
+
+\subsubsection{Druga postać normalna (2NF)}
+System spełnia 2NF, gdyż:
+\begin{itemize}
+    \item Spełnione są warunki 1NF
+    \item Wszystkie atrybuty niekluczowe są w pełni funkcyjnie zależne od klucza głównego
+    \item Nie występują częściowe zależności funkcyjne
+\end{itemize}
+
+\subsubsection{Trzecia postać normalna (3NF) i BCNF}
+System spełnia 3NF i BCNF, ponieważ:
+\begin{itemize}
+    \item Spełnione są warunki 2NF
+    \item Nie występują zależności przechodnie
+    \item Każda zależność funkcyjna X → Y spełnia warunek, że X jest nadkluczem
+\end{itemize}
+
+\section{Projekt funkcjonalny}
+
+\subsection{Interfejs użytkownika}
+System został zaimplementowany jako aplikacja webowa z wykorzystaniem następujących technologii:
+\begin{itemize}
+    \item Frontend: Vue.js 3 z TypeScript
+    \item Backend: Node.js z Express i TypeORM
+    \item Baza danych: PostgreSQL
+\end{itemize}
+
+\subsection{Główne komponenty interfejsu}
+\begin{enumerate}
+    \item Panel logowania i rejestracji:
+    \begin{itemize}
+        \item Formularz logowania
+        \item Formularz rejestracji nowego użytkownika
+        \item Walidacja danych wejściowych
+    \end{itemize}
+
+    \item Panel administracyjny:
+    \begin{itemize}
+        \item Zarządzanie użytkownikami
+        \item Zarządzanie flotą samochodów
+        \item Przeglądanie logów systemowych
+        \item Generowanie raportów
+    \end{itemize}
+
+    \item Panel klienta:
+    \begin{itemize}
+        \item Przeglądanie dostępnych samochodów
+        \item Rezerwacja pojazdu
+        \item Historia wypożyczeń
+    \end{itemize}
+\end{enumerate}
+\newpage
+\subsection{Wizualizacja danych}
+System generuje następujące raporty i widoki:
+
+\begin{enumerate}
+    \item Widok dostępności samochodów:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok dostępności samochodów}
+    ]
+CREATE VIEW car_availability AS
+SELECT
+    s.id_samochodu,
+    s.marka,
+    s.model,
+    s.rok_produkcji,
+    s.cena_za_dzien,
+    s.status,
+    CASE
+        WHEN w.id_wypozyczenia IS NULL THEN true
+        ELSE false
+    END as is_available
+FROM samochody s
+LEFT JOIN wypozyczenia w 
+    ON s.id_samochodu = w.id_samochodu
+    AND w.status = 'aktywne'
+    AND CURRENT_DATE BETWEEN w.data_wypozyczenia AND w.data_zwrotu;
+    \end{lstlisting}
+\newpage
+    \item Widok aktywnych wypożyczeń:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok aktywnych wypożyczeń}
+    ]
+CREATE VIEW active_rentals AS
+SELECT
+    w.id_wypozyczenia,
+    k.imie || ' ' || k.nazwisko AS klient,
+    k.telefon,
+    s.marka || ' ' || s.model AS samochod,
+    w.data_wypozyczenia,
+    w.data_zwrotu,
+    w.calkowity_koszt
+FROM wypozyczenia w
+JOIN klienci k ON w.id_klienta = k.id_klienta
+JOIN samochody s ON w.id_samochodu = s.id_samochodu
+WHERE w.status = 'aktywne';
+    \end{lstlisting}
+    \item Widok statystyk wypożyczeń:
+    \begin{lstlisting}[
+        language=SQL,
+        breaklines=true,
+        postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+        linewidth=\textwidth,
+        caption={Widok statystyk wypożyczeń}
+    ]
+    CREATE VIEW rental_statistics AS
+    SELECT
+        s.marka,
+        s.model,
+        COUNT(w.id_wypozyczenia) as total_rentals,
+        SUM(w.calkowity_koszt) as total_revenue,
+        AVG(w.calkowity_koszt) as avg_revenue
+    FROM samochody s
+    LEFT JOIN wypozyczenia w ON s.id_samochodu = w.id_samochodu
+    GROUP BY s.id_samochodu, s.marka, s.model
+    HAVING AVG(w.calkowity_koszt) > 200;
+
+    \end{lstlisting}
+\end{enumerate}
+
+\section{Dokumentacja techniczna}
+
+\subsection{Architektura systemu}
+System został zbudowany w architekturze trójwarstwowej:
+\begin{enumerate}
+    \item Warstwa prezentacji (Frontend)
+    \begin{itemize}
+        \item Implementacja w Vue.js 3 z TypeScript
+        \item Komponenty interfejsu użytkownika
+        \item Zarządzanie stanem aplikacji (Pinia)
+    \end{itemize}
+
+    \item Warstwa logiki biznesowej (Backend)
+    \begin{itemize}
+        \item API REST w Node.js z Express
+        \item Kontrolery obsługujące żądania
+        \item Middleware autoryzacji i walidacji
+    \end{itemize}
+
+    \item Warstwa danych
+    \begin{itemize}
+        \item Baza danych PostgreSQL
+        \item ORM (TypeORM)
+        \item Triggery i funkcje bazodanowe
+    \end{itemize}
+\end{enumerate}
+\newpage
+\subsection{Funkcje i triggery bazodanowe}
+
+\subsubsection{Funkcje pomocnicze}
+System wykorzystuje następujące funkcje SQL:
+
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    caption={Funkcja obliczająca koszt wypożyczenia}
+]
+CREATE OR REPLACE FUNCTION calculate_rental_cost(
+    p_car_id INTEGER,
+    p_start_date DATE,
+    p_end_date DATE
+) RETURNS DECIMAL AS $$
+DECLARE
+    v_daily_rate DECIMAL;
+    v_days INTEGER;
+BEGIN
+    SELECT cena_za_dzien INTO v_daily_rate
+    FROM samochody
+    WHERE id_samochodu = p_car_id;
+
+    v_days := p_end_date - p_start_date;
+    RETURN v_daily_rate * v_days;
+END;
+$$ LANGUAGE plpgsql;
+\end{lstlisting}
+\newpage
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    caption={Funkcja sprawdzająca dostępność samochodu}
+]
+CREATE OR REPLACE FUNCTION is_car_available(
+    p_car_id INTEGER,
+    p_start_date DATE,
+    p_end_date DATE
+) RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN NOT EXISTS (
+        SELECT 1
+        FROM wypozyczenia
+        WHERE id_samochodu = p_car_id
+        AND status = 'aktywne'
+        AND (data_wypozyczenia, data_zwrotu) 
+            OVERLAPS (p_start_date, p_end_date)
+    );
+END;
+$$ LANGUAGE plpgsql;
+\end{lstlisting}
+\newpage
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    caption={Funkcja walidująca daty wypożyczeń}
+]
+CREATE OR REPLACE FUNCTION validate_rental_dates()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Sprawdzenie poprawności dat
+    IF NEW.data_zwrotu <= NEW.data_wypozyczenia THEN
+        RAISE EXCEPTION 'Data zwrotu musi być późniejsza niż data wypożyczenia';
+    END IF;
+
+    -- Sprawdzenie dostępności samochodu
+    IF NOT is_car_available(NEW.id_samochodu, NEW.data_wypozyczenia, NEW.data_zwrotu) THEN
+        RAISE EXCEPTION 'Samochód jest niedostępny w wybranym terminie';
+    END IF;
+
+    -- Automatyczne obliczenie kosztu
+    IF NEW.calkowity_koszt IS NULL THEN
+        NEW.calkowity_koszt := calculate_rental_cost(
+            NEW.id_samochodu,
+            NEW.data_wypozyczenia,
+            NEW.data_zwrotu
+        );
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+\end{lstlisting}
+\newpage
+\subsubsection{System audytu i triggerów}
+System implementuje zaawansowany mechanizm audytu poprzez triggery:
+
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    caption={Funkcja logująca zmiany w systemie}
+]
+CREATE OR REPLACE FUNCTION log_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit_logs (
+        tabela,
+        operacja,
+        uzytkownik_id,
+        stare_dane,
+        nowe_dane
+    ) VALUES (
+        TG_TABLE_NAME,
+        TG_OP,
+        TG_ARGV[0]::INTEGER,
+        CASE WHEN TG_OP IN ('UPDATE', 'DELETE') 
+            THEN row_to_json(OLD) 
+            ELSE NULL 
+        END,
+        CASE WHEN TG_OP IN ('UPDATE', 'INSERT') 
+            THEN row_to_json(NEW) 
+            ELSE NULL 
+        END
+    );
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+\end{lstlisting}
+
+\paragraph{Triggery w systemie:}
+\begin{itemize}
+    \item \textbf{Trigger walidacji wypożyczeń:}
+    \begin{itemize}
+        \item Uruchamiany przed dodaniem nowego wypożyczenia
+        \item Sprawdza poprawność dat
+        \item Weryfikuje dostępność samochodu
+        \item Automatycznie oblicza koszt wypożyczenia
+    \end{itemize}
+
+    \item \textbf{Triggery audytowe:}
+    \begin{itemize}
+        \item Monitorują zmiany w tabelach: wypozyczenia, samochody, klienci
+        \item Zapisują szczegóły operacji: typ (INSERT/UPDATE/DELETE), stare i nowe wartości
+        \item Przechowują informacje o użytkowniku dokonującym zmian
+        \item Automatycznie rejestrują czas operacji
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Implementacja triggerów:}
+
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    caption={Definicje triggerów}
+]
+-- Trigger walidacji wypożyczeń
+CREATE TRIGGER before_rental_insert
+    BEFORE INSERT ON wypozyczenia
+    FOR EACH ROW
+    EXECUTE FUNCTION validate_rental_dates();
+
+-- Triggery audytowe dla poszczególnych tabel
+CREATE TRIGGER audit_wypozyczenia_changes
+    AFTER INSERT OR UPDATE OR DELETE ON wypozyczenia
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER audit_samochody_changes
+    AFTER INSERT OR UPDATE OR DELETE ON samochody
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+
+CREATE TRIGGER audit_klienci_changes
+    AFTER INSERT OR UPDATE OR DELETE ON klienci
+    FOR EACH ROW EXECUTE FUNCTION log_changes();
+\end{lstlisting}
+\end{itemize}
+
+\section{Implementacja zabezpieczeń}
+
+\subsection{Autoryzacja i autentykacja}
+System wykorzystuje wielopoziomowy system zabezpieczeń:
+
+\begin{enumerate}
+    \item Tokeny JWT:
+    \begin{itemize}
+        \item Generowanie tokena przy logowaniu
+        \item Weryfikacja tokena przy każdym żądaniu
+        \item Przechowywanie informacji o roli użytkownika w tokenie
+    \end{itemize}
+    \item Middleware autoryzacyjne:
+    \begin{lstlisting}[language=TypeScript]
+export const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        res.status(401).json({ message: "Brak tokenu autoryzacji" });
+        return;
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret-key') as JwtPayload;
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(403).json({ message: "Nieprawidłowy token" });
+        return;
+    }
+};
+    \end{lstlisting}
+
+    \item Walidacja danych wejściowych:
+    \begin{itemize}
+        \item Sprawdzanie poprawności formatu danych
+        \item Sanityzacja danych wejściowych
+        \item Zabezpieczenie przed SQL Injection poprzez ORM
+    \end{itemize}
+\end{enumerate}
+\subsection{Audytowanie operacji}
+System implementuje mechanizm śledzenia zmian w bazie danych:
+
+\begin{lstlisting}[
+    language=SQL,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    linewidth=\textwidth,
+    caption={Definicja tabeli logów audytowych}
+]
+CREATE TABLE audit_logs (
+    id_log SERIAL PRIMARY KEY,
+    tabela VARCHAR(50) NOT NULL,
+    operacja VARCHAR(20) NOT NULL,
+    data_operacji TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    uzytkownik_id INTEGER REFERENCES uzytkownicy(id_uzytkownika),
+    stare_dane JSONB,
+    nowe_dane JSONB
+);
+\end{lstlisting}
+
+\section{Dokumentacja użytkownika}
+
+\subsection{Instrukcja obsługi dla administratora}
+\begin{enumerate}
+    \item Logowanie do systemu:
+    \begin{itemize}
+        \item Wejdź na stronę logowania
+        \item Wprowadź dane administratora
+        \item Po zalogowaniu otrzymasz dostęp do panelu administracyjnego
+    \end{itemize}
+
+    \item Zarządzanie użytkownikami:
+    \begin{itemize}
+        \item Edycja danych istniejących użytkowników
+        \item Zmiana uprawnień użytkowników
+        \item Dezaktywacja kont
+    \end{itemize}
+
+    \item Zarządzanie flotą:
+    \begin{itemize}
+        \item Dodawanie nowych samochodów
+        \item Aktualizacja informacji o pojazdach
+        \item Usuwanie samochodów z systemu
+    \end{itemize}
+
+    \item Raporty i statystyki:
+    \begin{itemize}
+        \item Generowanie raportów wypożyczeń
+        \item Przeglądanie statystyk wykorzystania floty
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Instrukcja obsługi dla klienta}
+\begin{enumerate}
+    \item Rejestracja w systemie:
+    \begin{itemize}
+        \item Wypełnienie formularza rejestracyjnego
+        \item Uzupełnienie danych profilowych
+    \end{itemize}
+
+    \item Wypożyczanie samochodu:
+    \begin{itemize}
+        \item Przeglądanie dostępnych samochodów
+        \item Wybór terminu wypożyczenia
+        \item Potwierdzenie rezerwacji
+    \end{itemize}
+
+    \item Zarządzanie wypożyczeniami:
+    \begin{itemize}
+        \item Przeglądanie aktywnych wypożyczeń
+        \item Możliwość anulowania wypożyczenia
+    \end{itemize}
+\end{enumerate}
+
+\section{Wdrożenie i utrzymanie}
+
+\subsection{Wymagania systemowe}
+\begin{itemize}
+    \item Node.js v14 lub nowszy
+    \item PostgreSQL 12 lub nowszy
+    \item Nowoczesna przeglądarka internetowa
+\end{itemize}
+
+\subsection{Proces instalacji}
+\begin{enumerate}
+    \item Konfiguracja bazy danych:
+    \begin{lstlisting}[language=bash]
+    # Inicjalizacja bazy danych
+    psql -U postgres -f database/init/001_create_tables.sql
+    # Utworzenie widoków
+    psql -U postgres -f database/views/*.sql
+    # Konfiguracja triggerów
+    psql -U postgres -f database/triggers/*.sql
+    \end{lstlisting}
+\newpage
+    \item Instalacja zależności:
+    \begin{lstlisting}[language=bash]
+    # Instalacja zależności projektu
+    npm install
+    
+    # Skrypty dostępne w package.json (root):
+    "scripts": {
+      "start:api": "cd api && npm run start",
+      "start:web": "cd web && npm run serve",
+      "start": "concurrently \"npm run start:api\" \"npm run start:web\"",
+      "install:all": "npm install && cd api && npm install && cd ../web && npm install",
+      "typeorm": "cd api && npm run typeorm"
+    }
+    
+    # Instalacja wszystkich zależności
+    npm run install:all
+    
+    # Uruchomienie projektu
+    npm run start
+    \end{lstlisting}
+
+    \item Konfiguracja środowiska:
+    \begin{itemize}
+        \item Utworzenie pliku .env w katalogu głównym projektu
+        \item Konfiguracja połączenia z bazą danych
+        \item Ustawienie sekretnego klucza JWT
+    \end{itemize}
+\end{enumerate}
+
+\section{Literatura}
+
+\begin{enumerate}
+    \item Dokumentacja Vue.js 3 - \url{https://v3.vuejs.org/}
+    \item Dokumentacja TypeORM - \url{https://typeorm.io/}
+    \item Dokumentacja PostgreSQL - \url{https://www.postgresql.org/docs/}
+    \item Dokumentacja Express.js - \url{https://expressjs.com/}
+    \item "TypeScript Documentation" - \url{https://www.typescriptlang.org/docs/}
+\end{enumerate}
+
+\section{Struktura projektu}
+
+\begin{verbatim}
+project/
+├── api/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── klient.controller.ts          # Kontroler operacji na klientach
+│   │   │   ├── report.controller.ts          # Kontroler raportów i statystyk
+│   │   │   ├── role.controller.ts            # Kontroler zarządzania rolami
+│   │   │   ├── samochod.controller.ts        # Kontroler operacji na samochodach
+│   │   │   ├── uzytkownik.controller.ts      # Kontroler zarządzania użytkownikami
+│   │   │   └── wypozyczenie.controller.ts    # Kontroler wypożyczeń
+│   │   ├── entities/
+│   │   │   ├── Klient.ts                     # Encja klienta
+│   │   │   ├── Logi.ts                       # Encja logów audytowych
+│   │   │   ├── Role.ts                       # Encja ról użytkowników
+│   │   │   ├── Samochod.ts                   # Encja samochodu
+│   │   │   ├── Uzytkownik.ts                 # Encja użytkownika
+│   │   │   └── Wypozyczenie.ts               # Encja wypożyczenia
+│   │   ├── middleware/
+│   │   │   └──auth.middleware.ts            # Middleware autoryzacji
+│   │   ├── routes/
+│   │   │   ├── klient.routes.ts             # Routing dla klientów
+│   │   │   ├── logi.routes.ts               # Routing dla logów
+│   │   │   ├── report.routes.ts             # Routing dla raportów
+│   │   │   ├── role.routes.ts               # Routing dla ról
+│   │   │   ├── samochod.routes.ts           # Routing dla samochodów
+│   │   │   ├── uzytkownik.routes.ts         # Routing dla użytkowników
+│   │   │   └── wypozyczenie.routes.ts       # Routing dla wypożyczeń
+│   │   ├── config/
+│   │   │   └── database.ts                  # Konfiguracja bazy danych
+│   │   └── interfaces/                      # Interfejsy TypeScript 
+│   │── app.ts                               # Konfiguracja aplikacji
+│   │── server.ts                            # Konfiguracja aplikacji
+│   └── package.json                         # Zależności backendu
+├── web/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── RentView.vue                # Widok wypożyczenia
+│   │   │   ├── StepsShowcase.vue           # Prezentacja kroków
+│   │   │   ├── WelcomeView.vue             # Strona powitalna
+│   │   │   ├── account/                    # Komponenty konta użytkownika
+│   │   │   │   ├── Register.vue            # Komponent rejestracji
+│   │   │   │   └── SignIn.vue              # Komponent logowania
+│   │   │   └── layout/                     # Komponenty układu strony
+│   │   │       ├── Footer.vue              # Stopka strony
+│   │   │       ├── Navbar.vue              # Pasek nawigacji
+│   │   │       └── ScrollBack.vue          # Przycisk przewijania do góry
+│   │   ├── routes/                         # Widoki routingu
+│   │   │   ├── About.vue                   # Strona o nas
+│   │   │   ├── AdminPanel.vue              # Panel administratora
+│   │   │   ├── Contact.vue                 # Strona kontaktowa
+│   │   │   ├── Home.vue                    # Strona główna
+│   │   │   ├── Offer.vue                   # Strona z ofertą
+│   │   │   └── UserPanel.vue               # Panel użytkownika
+│   │   ├── interfaces/                     # Interfejsy TypeScript
+│   │   │   ├── Car.interface.ts            # Interfejs samochodu
+│   │   │   ├── Customer.interface.ts       # Interfejs klienta
+│   │   │   ├── Logs.interface.ts           # Interfejs logów
+│   │   │   ├── Rent.interface.ts           # Interfejs wypożyczenia
+│   │   │   └── User.interface.ts           # Interfejs użytkownika
+│   │   ├── router/                         # Konfiguracja routingu
+│   │   │   └── index.ts                    # Definicje ścieżek
+│   │   ├── store/                          # Stan aplikacji (Pinia)
+│   │   │   ├── store.ts                    # Główny store
+│   │   │   └── main.ts                     # Konfiguracja store
+│   │   └── App.vue                         # Główny komponent aplikacji
+│   ├── public/                             # Zasoby publiczne
+│   ├── node_modules/                       # Zależności projektu
+│   ├── package.json                        # Konfiguracja projektu
+│   └── tsconfig.json                       # Konfiguracja TypeScript
+└── database/
+    ├── init/
+    │   └── 001_create_tables.sql            # Inicjalizacja tabel
+    ├── triggers/
+    │   ├── audit_trigger.sql                # Trigger audytowy
+    │   └── rental_validation_trigger.sql     # Trigger walidacji wypożyczeń
+    ├── views/
+    │   ├── active_rental.sql                # Widok aktywnych wypożyczeń
+    │   ├── car_availability.sql             # Widok dostępności samochodów
+    │   └── rental_statistics.sql            # Widok statystyk wypożyczeń
+    └── functions/
+        ├── calculate_rental_cost.sql        # Funkcja obliczania kosztu
+        ├── is_car_available.sql             # Funkcja sprawdzania dostępności
+        └── validate_rental_dates.sql        # Funkcja walidacji dat
+\end{verbatim}
+
+\end{document}
