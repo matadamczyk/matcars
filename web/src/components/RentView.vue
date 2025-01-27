@@ -112,24 +112,40 @@ const submitForm = async () => {
         Authorization: `Bearer ${store.token}`,
       },
     };
+    
     await store.fetchUserData();
     const userDetails = store.getUserDetails();
-    if (userDetails) {
-      client.value.imie = userDetails.imie;
-      client.value.nazwisko = userDetails.nazwisko;
-      client.value.email = userDetails.email;
+    if (!userDetails) {
+      throw new Error("User details not found");
     }
 
-    if (!client.value.imie || !client.value.nazwisko || !client.value.email) {
-      alert("User details are missing.");
-      return;
-    }
-
-    const clientResponse = await axios.post(
-      "http://localhost:3050/api/klienci",
-      client.value,
+    const clientResponse = await axios.get(
+      `http://localhost:3050/api/klienci/user/${userDetails.id_uzytkownika}`,
       config
     );
+
+    let clientId;
+    if (clientResponse.data) {
+      const updatedClient = await axios.put(
+        `http://localhost:3050/api/klienci/${clientResponse.data.id_klienta}`,
+        { telefon: client.value.telefon },
+        config
+      );
+      clientId = updatedClient.data.id_klienta;
+    } else {
+      const newClient = await axios.post(
+        "http://localhost:3050/api/klienci",
+        {
+          imie: userDetails.imie,
+          nazwisko: userDetails.nazwisko,
+          email: userDetails.email,
+          telefon: client.value.telefon,
+          id_uzytkownika: userDetails.id_uzytkownika
+        },
+        config
+      );
+      clientId = newClient.data.id_klienta;
+    }
 
     const newRent = {
       data_wypozyczenia: pickupDate.value,
@@ -139,27 +155,13 @@ const submitForm = async () => {
         pickupDate.value,
         dropoffDate.value
       ),
-      klient: {
-        id_klienta: clientResponse.data.id_klienta,
-        imie: client.value.imie,
-        nazwisko: client.value.nazwisko,
-        email: client.value.email,
-        telefon: client.value.telefon,
-      },
-      samochod: {
-        id_samochodu: selectedCarModel.value!,
-        marka: availableCars.value.find(car => car.id_samochodu === selectedCarModel.value)!.marka,
-        model: availableCars.value.find(car => car.id_samochodu === selectedCarModel.value)!.model,
-      }
+      id_klienta: clientId,
+      id_samochodu: selectedCarModel.value,
+      status: 'aktywne'
     };
 
     await axios.post("http://localhost:3050/api/wypozyczenia", newRent, config);
-
-    availableCars.value = availableCars.value.filter(
-      (car) => car.id_samochodu !== selectedCarModel.value
-    );
     dialogVisible.value = false;
-    store.clearClientDetails();
     alert("Car booked successfully!");
   } catch (error) {
     console.error("Error booking car:", error);

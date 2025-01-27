@@ -6,9 +6,16 @@ import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
 
 interface DecodedToken {
-  id: number;
+  id_uzytkownika: number;
   rola: string;
   exp: number;
+  imie: string;
+  nazwisko: string;
+  email: string;
+}
+
+interface UserDetails {
+  id_uzytkownika: number;
   imie: string;
   nazwisko: string;
   email: string;
@@ -36,7 +43,7 @@ export const useStore = defineStore("matcars", () => {
   const isAdmin = ref<boolean>(false);
   const token = ref<string | null>(null);
   const clientDetails = ref<Customer | null>(null);
-  const user = ref<{ id: number; imie: string; nazwisko: string; email: string } | null>(null);
+  const user = ref<UserDetails | null>(null);
 
   const setToken = (newToken: string) => {
     token.value = newToken;
@@ -44,7 +51,12 @@ export const useStore = defineStore("matcars", () => {
     isLoggedIn.value = true;
     const decoded: DecodedToken = jwtDecode(newToken);
     isAdmin.value = decoded.rola === "admin";
-    user.value = { id: decoded.id, imie: decoded.imie, nazwisko: decoded.nazwisko, email: decoded.email };
+    user.value = { 
+      id_uzytkownika: decoded.id_uzytkownika,
+      imie: decoded.imie, 
+      nazwisko: decoded.nazwisko, 
+      email: decoded.email 
+    };
   };
 
   const clearToken = () => {
@@ -59,7 +71,7 @@ export const useStore = defineStore("matcars", () => {
     return token.value;
   };
 
-  const getUserDetails = () => {
+  const getUserDetails = (): UserDetails | null => {
     return user.value;
   };
 
@@ -102,7 +114,7 @@ export const useStore = defineStore("matcars", () => {
       isLoggedIn.value = true;
       const decoded: DecodedToken = jwtDecode(savedToken);
       isAdmin.value = decoded.rola === "admin";
-      user.value = { id: decoded.id, imie: decoded.imie, nazwisko: decoded.nazwisko, email: decoded.email };
+      user.value = { id_uzytkownika: decoded.id_uzytkownika, imie: decoded.imie, nazwisko: decoded.nazwisko, email: decoded.email };
       fetchUserData();
     }
   });

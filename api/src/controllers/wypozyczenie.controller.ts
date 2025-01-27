@@ -51,15 +51,16 @@ export const getWypozyczenie = async (req: Request, res: Response): Promise<void
 
 export const createWypozyczenie = async (req: Request, res: Response): Promise<void> => {
     const repo = AppDataSource.getRepository(Wypozyczenie);
-    const { data_wypozyczenia, data_zwrotu, calkowity_koszt, klient, samochod } = req.body;
+    const { data_wypozyczenia, data_zwrotu, calkowity_koszt, id_klienta, id_samochodu } = req.body;
 
     try {
         const wypozyczenie = repo.create({
             data_wypozyczenia,
             data_zwrotu,
             calkowity_koszt,
-            klient,
-            samochod
+            status: 'aktywne',
+            klient: { id_klienta },
+            samochod: { id_samochodu }
         });
 
         const result = await repo.save(wypozyczenie);

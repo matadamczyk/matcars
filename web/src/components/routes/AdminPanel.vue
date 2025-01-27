@@ -373,8 +373,8 @@ const sections = ref<Array<{
   },
   {
     title: 'Dostępność Samochodów',
-    headers: ['ID', 'Marka', 'Model', 'Rok produkcji', 'Cena za dzień', 'Status', 'Dostępność'],
-    keys: ['id_samochodu', 'marka', 'model', 'rok_produkcji', 'cena_za_dzien', 'status', 'is_available'],
+    headers: ['ID', 'Marka', 'Model', 'Rok produkcji', 'Cena za dzień', 'Dostępność'],
+    keys: ['id_samochodu', 'marka', 'model', 'rok_produkcji', 'cena_za_dzien', 'is_available'],
     data: carAvailability.value,
     isOpen: false,
     error: ''

@@ -122,3 +122,44 @@ export const deleteKlient = async (req: Request, res: Response): Promise<void> =
         res.status(500).json({ message: "Błąd serwera", error });
     }
 };
+
+export const getKlientByEmail = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const repo = AppDataSource.getRepository(Klient);
+    const klient = await repo.findOne({
+      where: { email: req.params.email }
+    });
+    
+    if (!klient) {
+      res.status(404).json({ message: "Klient nie znaleziony" });
+      return;
+    }
+    
+    res.json(klient);
+  } catch (error) {
+    console.error("Error fetching klient by email:", error);
+    res.status(500).json({ message: "Błąd serwera", error });
+  }
+};
+
+export const getKlientByUserId = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const klientRepository = AppDataSource.getRepository(Klient);
+    const klient = await klientRepository.findOne({
+      where: { 
+        uzytkownik: { id_uzytkownika: parseInt(req.params.userId) } 
+      },
+      relations: ['uzytkownik']
+    });
+    
+    if (!klient) {
+      res.status(404).json({ message: "Klient nie znaleziony" });
+      return;
+    }
+    
+    res.json(klient);
+  } catch (error) {
+    console.error("Error fetching client by user ID:", error);
+    res.status(500).json({ message: "Błąd serwera", error });
+  }
+};
